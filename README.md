@@ -94,6 +94,10 @@ Ver [docs/POLITICA_DE_VERSIONES.md](docs/POLITICA_DE_VERSIONES.md)
 | `develop` | Integración de las ramas de funcionalidad |
 | `feature/*` | Trabajo por funcionalidad o programador |
 
+## Diseño
+
+Árbol de navegación, arquitectura de información, modelo de dominio y prototipos de alta fidelidad (Reto 11): ver [docs/diseno/](docs/diseno/README.md)
+
 ## Guía de estilo de código
 
 Ver [docs/GUIA_DE_ESTILO.md](docs/GUIA_DE_ESTILO.md)
