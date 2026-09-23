@@ -94,9 +94,14 @@ Ver [docs/POLITICA_DE_VERSIONES.md](docs/POLITICA_DE_VERSIONES.md)
 | `develop` | Integración de las ramas de funcionalidad |
 | `feature/*` | Trabajo por funcionalidad o programador |
 
-## Diseño
+## Diseño (Reto 11)
 
-Árbol de navegación, modelo de dominio y prototipos de alta fidelidad (Reto 11): ver [docs/diseno/](docs/diseno/README.md)
+Funcionalidad elegida por el equipo: Adopciones.
+
+- [Árbol de navegación](docs/diseno/mapa_navegacion.png)
+- [Modelo de dominio actualizado](docs/diseno/modelo_dominio.png)
+- Prototipos de alta fidelidad: `docs/diseno/prototipo/mobile.html` (Android 360x640) y `docs/diseno/prototipo/desktop.html` (1440x1024). Imagen de cada pantalla en [docs/diseno/prototipo/export](docs/diseno/prototipo/export)
+- Figma: https://www.figma.com/design/huw3naEh7rwWHHaQ7r2u6t/Pawly
 
 ## Guía de estilo de código
 
