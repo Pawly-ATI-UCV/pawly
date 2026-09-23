@@ -96,7 +96,7 @@ Ver [docs/POLITICA_DE_VERSIONES.md](docs/POLITICA_DE_VERSIONES.md)
 
 ## Diseño
 
-Árbol de navegación, arquitectura de información, modelo de dominio y prototipos de alta fidelidad (Reto 11): ver [docs/diseno/](docs/diseno/README.md)
+Árbol de navegación, modelo de dominio y prototipos de alta fidelidad (Reto 11): ver [docs/diseno/](docs/diseno/README.md)
 
 ## Guía de estilo de código
 
