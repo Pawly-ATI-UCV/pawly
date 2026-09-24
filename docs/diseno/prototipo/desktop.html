@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Pawly — Prototipo Desktop (1440×1024)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700;800&family=Figtree:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="estilos.css">
+<style>
+  .frame.desktop .topbar { padding: 14px 28px; gap: 18px; }
+  .frame.desktop .content { padding: 28px 32px; gap: 18px; }
+  .frame.desktop .h1 { font-size: 34px; }
+  .frame.desktop .h2 { font-size: 24px; }
+  .frame.desktop .bubble { font-size: 14px; }
+  .frame.desktop .post p { font-size: 14px; }
+  .aside { flex: 0 0 320px; padding: 28px 28px 28px 0; display: flex; flex-direction: column; gap: 16px; }
+  .center { max-width: 680px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+  .nav-desk { display: flex; flex-direction: column; gap: 4px; }
+</style>
+</head>
+<body>
+
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M7 12h10"/><path d="M10 18h4"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.09-3.09a2 2 0 0 0-2.83 0L6 21"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></symbol>
+  <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></symbol>
+  <symbol id="i-dash" viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></symbol>
+  <symbol id="i-paw" viewBox="0 0 24 24"><ellipse cx="6.5" cy="9" rx="2" ry="2.6"/><ellipse cx="11" cy="5.5" rx="2" ry="2.6"/><ellipse cx="16.5" cy="6.5" rx="2" ry="2.6"/><ellipse cx="20" cy="11.5" rx="1.8" ry="2.4"/><path d="M12.5 10.5c-3.6 0-6.5 2.8-6.5 5.6 0 1.9 1.4 3 3.2 3 1.2 0 2.1-.7 3.3-.7s2.1.7 3.3.7c1.8 0 3.2-1.1 3.2-3 0-2.8-2.9-5.6-6.5-5.6Z"/></symbol>
+</svg>
+
+
+<div class="gallery col">
+
+<!-- 01 Login -->
+<div class="screen-block">
+    <div class="frame desktop" id="d01" data-label="01 · Iniciar sesión" style="flex-direction:row;">
+    <div style="flex:0 0 640px;position:relative;overflow:hidden;">
+      <img src="img/hero.jpg" alt="" style="width:100%;height:100%;object-fit:cover;">
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(31,26,23,0) 40%,rgba(31,26,23,.75));"></div>
+      <div style="position:absolute;left:48px;bottom:48px;color:#FFFDFA;max-width:480px;">
+        <div class="h-display" style="font-size:44px;">Cada mascota merece una familia. Cada familia, una mascota.</div>
+        <p style="margin-top:14px;font-size:15px;opacity:.85;">Pawly conecta a dueños, rescatistas y personas que quieren adoptar en Caracas y sus alrededores.</p>
+      </div>
+    </div>
+    <div class="content" style="justify-content:center;align-items:center;">
+      <div style="width:380px;display:flex;flex-direction:column;gap:18px;">
+        <img class="logo-full" src="img/logo-full.png" alt="Pawly" style="width:170px">
+        <div class="col" style="gap:2px"><div class="h2">Bienvenido de vuelta</div><p class="muted">Entra para ver las novedades de tu comunidad.</p></div>
+        <div class="field"><label>Usuario o correo</label><div class="input"><svg class="i sm muted"><use href="#i-mail"/></svg><span>darvin.hernandez</span></div></div>
+        <div class="field"><label>Contraseña</label><div class="input"><svg class="i sm muted"><use href="#i-lock"/></svg><span>••••••••••</span><svg class="i sm muted" style="margin-left:auto"><use href="#i-eye"/></svg></div></div>
+        <div class="row between"><span class="small muted">Recordarme en este equipo</span><span class="small link">¿Olvidaste tu contraseña?</span></div>
+        <div class="btn block">Entrar</div>
+        <p class="small muted" style="text-align:center;">¿Nuevo en Pawly? <span class="link">Crea tu cuenta</span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 02 Registro -->
+<div class="screen-block">
+    <div class="frame desktop" id="d02" data-label="02 · Registro (paso 1 de 2)">
+    <div class="topbar"><div class="brand"><img class="logo-mark" src="img/logo-mark.png" alt=""><img class="logo-word" src="img/logo-word.png" alt="Pawly"></div><div class="grow"></div><span class="small muted">¿Ya tienes cuenta? <span class="link">Inicia sesión</span></span></div>
+    <div class="content" style="justify-content:center;align-items:center;">
+      <div class="card" style="width:560px;padding:36px;display:flex;flex-direction:column;gap:18px;">
+        <div class="col" style="gap:8px;">
+          <div class="row between"><span class="eyebrow">Paso 1 de 2 · Datos de la cuenta</span><span class="small muted">Luego: tu perfil</span></div>
+          <div class="progress"><div class="fill" style="width:50%"></div></div>
+        </div>
+        <div class="h1">Crea tu cuenta</div>
+        <div class="grid2">
+          <div class="field"><label>Nombre de usuario</label><div class="input"><span>laura.barreto</span></div><span class="hint">Así te encontrarán otras personas.</span></div>
+          <div class="field"><label>Correo electrónico</label><div class="input"><span>laura.barreto@gmail.com</span></div></div>
+          <div class="field"><label>Contraseña</label><div class="input"><span>••••••••••</span><svg class="i sm muted" style="margin-left:auto"><use href="#i-eye"/></svg></div><span class="hint">Mínimo 8 caracteres, con un número.</span></div>
+          <div class="field"><label>Confirmar contraseña</label><div class="input"><span class="ph">Repite tu contraseña</span></div></div>
+        </div>
+        <div class="row between" style="margin-top:6px"><span class="xs muted">Al continuar aceptas las reglas de la comunidad.</span><div class="btn">Continuar</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 03 Feed -->
+<div class="screen-block">
+    <div class="frame desktop" id="d03" data-label="03 · Inicio (Feed)">
+    <div class="topbar">
+      <div class="brand"><img class="logo-mark" src="img/logo-mark.png" alt=""><img class="logo-word" src="img/logo-word.png" alt="Pawly"></div>
+      <div class="search" style="width:420px;margin-left:24px;"><svg class="i sm"><use href="#i-search"/></svg>Buscar personas, mascotas o publicaciones</div>
+      <div class="grow"></div>
+      <div class="iconbtn bordered"><svg class="i"><use href="#i-bell"/></svg><span class="badge">3</span></div>
+      <div class="iconbtn bordered"><svg class="i"><use href="#i-chat"/></svg><span class="badge">2</span></div>
+      <img class="avatar" src="img/avatar-h.svg" alt="">
+    </div>
+    <div class="body">
+      <div class="sidebar">
+        <div class="item on"><svg class="i"><use href="#i-home"/></svg>Inicio</div>
+        <div class="item"><svg class="i"><use href="#i-search"/></svg>Buscar</div>
+        <div class="item"><svg class="i fill"><use href="#i-paw"/></svg>Adopción</div>
+        <div class="item"><svg class="i"><use href="#i-chat"/></svg>Mensajes<span class="badge">2</span></div>
+        <div class="item"><svg class="i"><use href="#i-bell"/></svg>Notificaciones<span class="badge">3</span></div>
+        <div class="item"><svg class="i"><use href="#i-user"/></svg>Mi perfil</div>
+        <div class="btn block" style="margin-top:14px"><svg class="i sm"><use href="#i-plus"/></svg>Publicar</div>
+        <div class="foot item muted"><svg class="i"><use href="#i-logout"/></svg>Cerrar sesión</div>
+      </div>
+      <div class="content">
+        <div class="center">
+          <div class="composer" style="padding:10px 10px 10px 12px;"><img class="avatar" src="img/avatar-h.svg" alt=""><span class="ph" style="font-size:14px">¿Qué está haciendo tu mascota hoy?</span><div class="btn icon soft"><svg class="i sm"><use href="#i-image"/></svg></div><div class="btn sm">Publicar</div></div>
+          <div class="post" style="padding:18px;gap:12px;">
+            <div class="row"><img class="avatar" src="img/avatar-m.svg" alt=""><div class="col" style="gap:0"><span class="strong">Andrea Salas</span><span class="meta">@andreasalas · Chacao · hace 2 h</span></div><svg class="i sm muted" style="margin-left:auto"><use href="#i-more"/></svg></div>
+            <p>Luna cumplió 3 años hoy 🎉 le regalamos un juguete nuevo y no lo ha soltado en toda la tarde 🐶</p>
+            <img class="photo" src="img/d2.jpg" alt="" style="aspect-ratio:16/9;">
+            <div class="actions"><span><svg class="i sm"><use href="#i-heart"/></svg> 48 me gusta</span><span><svg class="i sm"><use href="#i-chat"/></svg> 12 comentarios</span></div>
+          </div>
+          <div class="post" style="padding:18px;gap:12px;">
+            <div class="row"><img class="avatar" src="img/avatar-h.svg" alt=""><div class="col" style="gap:0"><span class="strong">Luis García</span><span class="meta">@luisgarcia · La Candelaria · ayer</span></div></div>
+            <p>Toby ya está listo para buscar familia 🏡 tiene 2 años vacunas al día y adora a los niños 🙏 si conocen a alguien compartan</p>
+            <div class="row"><span class="tag green"><svg class="i xs fill"><use href="#i-paw"/></svg> En adopción</span><span class="link small">Ver a Toby</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="aside">
+        <div class="aside-box">
+          <div class="row between"><span class="t">En adopción cerca de ti</span><span class="xs link">Ver todas</span></div>
+          <div class="row"><img class="avatar lg" src="img/d1.jpg" alt="" style="border-radius:12px;"><div class="col grow" style="gap:0"><span class="strong small">Toby</span><span class="xs muted">Mestizo · 2 años · a 2 km</span></div></div>
+          <div class="row"><img class="avatar lg" src="img/c1.jpg" alt="" style="border-radius:12px;"><div class="col grow" style="gap:0"><span class="strong small">Nala</span><span class="xs muted">Gata · 1 año · a 3 km</span></div></div>
+          <div class="row"><img class="avatar lg" src="img/d3.jpg" alt="" style="border-radius:12px;"><div class="col grow" style="gap:0"><span class="strong small">Rocky</span><span class="xs muted">Beagle · 4 años · a 4 km</span></div></div>
+        </div>
+        <div class="aside-box">
+          <span class="t">Personas que quizá conoces</span>
+          <div class="row"><img class="avatar" src="img/avatar-m.svg" alt=""><div class="col grow" style="gap:0"><span class="strong small">Luna Martínez</span><span class="xs muted">Baruta</span></div><span class="btn sm ghost">Seguir</span></div>
+          <div class="row"><img class="avatar" src="img/avatar-h.svg" alt=""><div class="col grow" style="gap:0"><span class="strong small">Pedro Ramírez</span><span class="xs muted">El Hatillo</span></div><span class="btn sm ghost">Seguir</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 04 Publicación -->
+<div class="screen-block">
+    <div class="frame desktop" id="d04" data-label="04 · Publicación y comentarios">
+    <div class="topbar"><div class="brand"><img class="logo-mark" src="img/logo-mark.png" alt=""><img class="logo-word" src="img/logo-word.png" alt="Pawly"></div><div class="search" style="width:420px;margin-left:24px;"><svg class="i sm"><use href="#i-search"/></svg>Buscar personas, mascotas o publicaciones</div><div class="grow"></div><div class="iconbtn bordered"><svg class="i"><use href="#i-bell"/></svg></div><img class="avatar" src="img/avatar-h.svg" alt=""></div>
+    <div class="body">
+      <div class="sidebar"><div class="item on"><svg class="i"><use href="#i-home"/></svg>Inicio</div><div class="item"><svg class="i"><use href="#i-search"/></svg>Buscar</div><div class="item"><svg class="i fill"><use href="#i-paw"/></svg>Adopción</div><div class="item"><svg class="i"><use href="#i-chat"/></svg>Mensajes</div><div class="item"><svg class="i"><use href="#i-bell"/></svg>Notificaciones</div><div class="item"><svg class="i"><use href="#i-user"/></svg>Mi perfil</div></div>
+      <div class="content" style="flex-direction:row;gap:28px;align-items:flex-start;">
+        <div class="row" style="align-self:flex-start"><div class="iconbtn bordered"><svg class="i"><use href="#i-back"/></svg></div></div>
+        <div class="post" style="flex:0 0 620px;padding:20px;gap:14px;">
+          <div class="row"><img class="avatar" src="img/avatar-m.svg" alt=""><div class="col" style="gap:0"><span class="strong">Andrea Salas</span><span class="meta">@andreasalas · 12 sep 2026, 4:10 p. m. · Chacao</span></div><div class="iconbtn" style="margin-left:auto"><svg class="i"><use href="#i-flag"/></svg></div></div>
+          <p style="font-size:15px;">Luna cumplió 3 años hoy 🎉 le regalamos un juguete nuevo y no lo ha soltado en toda la tarde 🐶</p>
+          <img class="photo" src="img/d2.jpg" alt="" style="aspect-ratio:4/3;">
+          <div class="actions"><span><svg class="i sm"><use href="#i-heart"/></svg> 48 me gusta</span><span><svg class="i sm"><use href="#i-chat"/></svg> 12 comentarios</span></div>
+        </div>
+        <div class="col grow" style="gap:14px;">
+          <div class="h3">12 comentarios</div>
+          <div class="comment"><img class="avatar sm" src="img/avatar-m.svg" alt=""><div class="grow"><div class="bubble-c"><span class="who">Valentina Ochoa</span><br>Feliz cumpleaños Luna 🎂🐾 qué linda se ve</div><div class="meta">hace 1 h · Responder</div></div></div>
+          <div class="comment" style="padding-left:40px"><img class="avatar sm" src="img/avatar-m.svg" alt=""><div class="grow"><div class="bubble-c"><span class="who">Andrea Salas</span><br>Gracias Vale ❤️ estaba muy contenta</div><div class="meta">hace 50 min · Responder</div></div></div>
+          <div class="comment"><img class="avatar sm" src="img/avatar-h.svg" alt=""><div class="grow"><div class="bubble-c"><span class="who">José Gutiérrez</span><br>Dónde compraron el juguete? Bruno cumple el mes que viene 🎁</div><div class="meta">hace 40 min · Responder</div></div></div>
+          <div class="comment"><img class="avatar sm" src="img/avatar-h.svg" alt=""><div class="grow"><div class="bubble-c"><span class="who">Pedro Ramírez</span><br>Se ve muy feliz 🥰 felicidades a las dos</div><div class="meta">hace 15 min · Responder</div></div></div>
+          <div class="row" style="margin-top:6px"><img class="avatar sm" src="img/avatar-h.svg" alt=""><div class="input grow"><span class="ph">Escribe un comentario…</span></div><div class="btn">Comentar</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 05 Buscar -->
+<div class="screen-block">
+    <div class="frame desktop" id="d05" data-label="05 · Buscar">
+    <div class="topbar"><div class="brand"><img class="logo-mark" src="img/logo-mark.png" alt=""><img class="logo-word" src="img/logo-word.png" alt="Pawly"></div><div class="search" style="width:420px;margin-left:24px;color:var(--ink)"><svg class="i sm muted"><use href="#i-search"/></svg>luna<svg class="i sm muted" style="margin-left:auto"><use href="#i-x"/></svg></div><div class="grow"></div><div class="iconbtn bordered"><svg class="i"><use href="#i-bell"/></svg></div><img class="avatar" src="img/avatar-h.svg" alt=""></div>
+    <div class="body">
+      <div class="sidebar"><div class="item"><svg class="i"><use href="#i-home"/></svg>Inicio</div><div class="item on"><svg class="i"><use href="#i-search"/></svg>Buscar</div><div class="item"><svg class="i fill"><use href="#i-paw"/></svg>Adopción</div><div class="item"><svg class="i"><use href="#i-chat"/></svg>Mensajes</div><div class="item"><svg class="i"><use href="#i-bell"/></svg>Notificaciones</div><div class="item"><svg class="i"><use href="#i-user"/></svg>Mi perfil</div></div>
+      <div class="content">
+        <div class="col" style="gap:4px"><div class="h1">Resultados para "luna"</div><p class="muted">3 personas · 2 mascotas · 8 publicaciones</p></div>
+        <div class="tabs"><div class="tab on">Usuarios</div><div class="tab">Mascotas</div><div class="tab">Publicaciones</div></div>
+        <div class="grid3">
+          <div class="card pad row"><img class="avatar lg" src="img/avatar-m.svg" alt=""><div class="col grow" style="gap:0"><span class="strong">Luna Martínez</span><span class="small muted">@lunamtz · Baruta</span></div><span class="btn sm ghost">Seguir</span></div>
+          <div class="card pad row"><img class="avatar lg" src="img/avatar-m.svg" alt=""><div class="col grow" style="gap:0"><span class="strong">Luna Delgado</span><span class="small muted">@ldelgado · Los Teques</span></div><span class="btn sm dark">Siguiendo</span></div>
+          <div class="card pad row"><img class="avatar lg" src="img/avatar-m.svg" alt=""><div class="col grow" style="gap:0"><span class="strong">Lunita Rescates</span><span class="small muted">@lunitarescates · Chacao</span></div><span class="btn sm ghost">Seguir</span></div>
+        </div>
+        <div class="row between" style="margin-top:8px"><span class="h3">Mascotas con ese nombre</span><span class="link small">Ver las 2</span></div>
+        <div class="grid4">
+          <div class="petcard"><img src="img/d2.jpg" alt=""><div class="info"><span class="name">Luna</span><span class="sub">Mestiza · de Andrea Salas</span></div></div>
+          <div class="petcard"><img src="img/d6.jpg" alt=""><div class="info"><span class="name">Luna</span><span class="sub">Mestiza · de Pedro Ramírez</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 06 Adopción -->
+<div class="screen-block">
+    <div class="frame desktop" id="d06" data-label="06 · Adopción (feed por cercanía)">
+    <div class="topbar"><div class="brand"><img class="logo-mark" src="img/logo-mark.png" alt=""><img class="logo-word" src="img/logo-word.png" alt="Pawly"></div><div class="search" style="width:420px;margin-left:24px;"><svg class="i sm"><use href="#i-search"/></svg>Buscar personas, mascotas o publicaciones</div><div class="grow"></div><div class="iconbtn bordered"><svg class="i"><use href="#i-bell"/></svg></div><img class="avatar" src="img/avatar-h.svg" alt=""></div>
+    <div class="body">
+      <div class="sidebar"><div class="item"><svg class="i"><use href="#i-home"/></svg>Inicio</div><div class="item"><svg class="i"><use href="#i-search"/></svg>Buscar</div><div class="item on"><svg class="i fill"><use href="#i-paw"/></svg>Adopción</div><div class="item"><svg class="i"><use href="#i-chat"/></svg>Mensajes</div><div class="item"><svg class="i"><use href="#i-bell"/></svg>Notificaciones</div><div class="item"><svg class="i"><use href="#i-user"/></svg>Mi perfil</div></div>
+      <div class="content">
+        <div class="row between start">
+          <div class="col" style="gap:4px"><div class="h1">Adopción</div><p class="muted row" style="gap:6px"><svg class="i sm"><use href="#i-pin"/></svg>Mascotas cerca de Chacao, Caracas · ordenadas por distancia</p></div>
+          <div class="row"><span class="chip"><svg class="i xs"><use href="#i-pin"/></svg>Cambiar ubicación</span><span class="chip"><svg class="i xs"><use href="#i-filter"/></svg>Filtros</span></div>
+        </div>
+        <div class="row" style="gap:8px;"><span class="chip on">Todos</span><span class="chip">Perros</span><span class="chip">Gatos</span><span class="chip">Cachorros</span><span class="chip">Adultos</span><span class="chip">&lt; 5 km</span><span class="chip">&lt; 15 km</span></div>
+        <div class="grid4">
+          <div class="petcard"><div class="thumbwrap"><img src="img/d1.jpg" alt=""><span class="tag green">2 km</span></div><div class="info"><span class="name">Toby</span><span class="sub">Mestizo · 2 años · Macho</span><span class="xs muted">Chacao · Luis García</span></div></div>
+          <div class="petcard"><div class="thumbwrap"><img src="img/c1.jpg" alt=""><span class="tag green">3 km</span></div><div class="info"><span class="name">Nala</span><span class="sub">Gata · 1 año · Hembra</span><span class="xs muted">La Candelaria · Lunita Rescates</span></div></div>
+          <div class="petcard"><div class="thumbwrap"><img src="img/d3.jpg" alt=""><span class="tag green">4 km</span></div><div class="info"><span class="name">Rocky</span><span class="sub">Beagle · 4 años · Macho</span><span class="xs muted">Los Palos Grandes · Daniela Bracho</span></div></div>
+          <div class="petcard"><div class="thumbwrap"><img src="img/d4.jpg" alt=""><span class="tag green">6 km</span></div><div class="info"><span class="name">Kira</span><span class="sub">Mestiza · 8 meses · Hembra</span><span class="xs muted">Baruta · Luna Martínez</span></div></div>
+          <div class="petcard"><div class="thumbwrap"><img src="img/d7.jpg" alt=""><span class="tag green">7 km</span></div><div class="info"><span class="name">Bruno</span><span class="sub">Labrador · 3 años · Macho</span><span class="xs muted">El Hatillo · Pedro Ramírez</span></div></div>
+          <div class="petcard"><div class="thumbwrap"><img src="img/d8.jpg" alt=""><span class="tag green">9 km</span></div><div class="info"><span class="name">Coco</span><span class="sub">Mestizo · 5 años · Macho</span><span class="xs muted">Petare · José Gutiérrez</span></div></div>
+          <div class="petcard"><div class="thumbwrap"><img src="img/c2.jpg" alt=""><span class="tag green">12 km</span></div><div class="info"><span class="name">Simón</span><span class="sub">Gato · 8 meses · Macho</span><span class="xs muted">Los Teques · Luna Delgado</span></div></div>
+          <div class="petcard"><div class="thumbwrap"><img src="img/d9.jpg" alt=""><span class="tag green">18 km</span></div><div class="info"><span class="name">Max</span><span class="sub">Pastor alemán · 6 años · Macho</span><span class="xs muted">Guarenas · Valentina Ochoa</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 07 Detalle mascota -->
+<div class="screen-block">
+    <div class="frame desktop" id="d07" data-label="07 · Mascota en adopción">
+    <div class="topbar"><div class="brand"><img class="logo-mark" src="img/logo-mark.png" alt=""><img class="logo-word" src="img/logo-word.png" alt="Pawly"></div><div class="search" style="width:420px;margin-left:24px;"><svg class="i sm"><use href="#i-search"/></svg>Buscar personas, mascotas o publicaciones</div><div class="grow"></div><div class="iconbtn bordered"><svg class="i"><use href="#i-bell"/></svg></div><img class="avatar" src="img/avatar-h.svg" alt=""></div>
+    <div class="body">
+      <div class="sidebar"><div class="item"><svg class="i"><use href="#i-home"/></svg>Inicio</div><div class="item"><svg class="i"><use href="#i-search"/></svg>Buscar</div><div class="item on"><svg class="i fill"><use href="#i-paw"/></svg>Adopción</div><div class="item"><svg class="i"><use href="#i-chat"/></svg>Mensajes</div><div class="item"><svg class="i"><use href="#i-bell"/></svg>Notificaciones</div><div class="item"><svg class="i"><use href="#i-user"/></svg>Mi perfil</div></div>
+      <div class="content" style="flex-direction:row;gap:32px;">
+        <div class="col" style="flex:0 0 560px;gap:12px;">
+          <span class="link small row" style="gap:4px"><svg class="i xs"><use href="#i-back"/></svg>Volver a Adopción</span>
+          <img src="img/d1.jpg" alt="" style="width:100%;height:440px;object-fit:cover;border-radius:20px;">
+          <div class="row" style="gap:8px"><img src="img/d1.jpg" alt="" style="width:100px;height:72px;object-fit:cover;border-radius:10px;border:2px solid var(--accent)"><img src="img/d1.jpg" alt="" style="width:100px;height:72px;object-fit:cover;object-position:left center;border-radius:10px;"><img src="img/d1.jpg" alt="" style="width:100px;height:72px;object-fit:cover;object-position:right center;border-radius:10px;"></div>
+        </div>
+        <div class="col grow" style="gap:18px;padding-top:28px;">
+          <div class="row between start">
+            <div class="col" style="gap:4px"><div class="h1">Toby</div><span class="muted row" style="gap:4px"><svg class="i sm"><use href="#i-pin"/></svg>Chacao, Caracas · a 2 km de ti</span></div>
+            <div class="row"><span class="tag green">En adopción</span><div class="iconbtn bordered"><svg class="i"><use href="#i-heart"/></svg></div></div>
+          </div>
+          <div class="kv" style="grid-template-columns:repeat(4,1fr)">
+            <div class="k"><span class="a">Especie</span><span class="b">Perro · Mestizo</span></div>
+            <div class="k"><span class="a">Edad</span><span class="b">2 años</span></div>
+            <div class="k"><span class="a">Sexo</span><span class="b">Macho</span></div>
+            <div class="k"><span class="a">Temperamento</span><span class="b">Tranquilo</span></div>
+          </div>
+          <div class="col" style="gap:6px"><span class="eyebrow">Sobre Toby</span><p style="font-size:15px;max-width:60ch;">Tranquilo juguetón y muy apegado 🐾 se lleva bien con niños y otros perros, tiene sus vacunas al día y está esterilizado. Lo rescatamos en La Candelaria hace un año y ya está listo para su hogar definitivo 🏡</p></div>
+          <div class="col" style="gap:6px"><span class="eyebrow">Busca una familia que</span><p style="font-size:15px;max-width:60ch;">Tenga patio o salga a caminar a diario y esté en Caracas o los Valles del Tuy para poder hacer la visita previa</p></div>
+          <div class="card pad row" style="gap:14px;"><img class="avatar lg" src="img/avatar-h.svg" alt=""><div class="col grow" style="gap:0"><span class="strong">Luis García</span><span class="small muted">Publicado el 10 sep 2026 · 2 adopciones logradas</span></div><span class="btn sm ghost">Ver perfil</span></div>
+          <div class="row" style="margin-top:auto"><div class="btn" style="padding:14px 28px;font-size:15px"><svg class="i sm fill"><use href="#i-paw"/></svg>Postularme para adoptar</div><span class="small muted">Se abrirá un chat con Luis.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 08 Postulación modal -->
+<div class="screen-block">
+    <div class="frame desktop" id="d08" data-label="08 · Postulación (confirmación)">
+    <div class="topbar"><div class="brand"><img class="logo-mark" src="img/logo-mark.png" alt=""><img class="logo-word" src="img/logo-word.png" alt="Pawly"></div><div class="search" style="width:420px;margin-left:24px;"><svg class="i sm"><use href="#i-search"/></svg>Buscar personas, mascotas o publicaciones</div><div class="grow"></div><div class="iconbtn bordered"><svg class="i"><use href="#i-bell"/></svg></div><img class="avatar" src="img/avatar-h.svg" alt=""></div>
+    <div class="body">
+      <div class="sidebar"><div class="item"><svg class="i"><use href="#i-home"/></svg>Inicio</div><div class="item"><svg class="i"><use href="#i-search"/></svg>Buscar</div><div class="item on"><svg class="i fill"><use href="#i-paw"/></svg>Adopción</div><div class="item"><svg class="i"><use href="#i-chat"/></svg>Mensajes</div><div class="item"><svg class="i"><use href="#i-bell"/></svg>Notificaciones</div><div class="item"><svg class="i"><use href="#i-user"/></svg>Mi perfil</div></div>
+      <div class="content" style="flex-direction:row;gap:32px;">
+        <div class="col" style="flex:0 0 560px;gap:12px;"><span class="link small">← Volver a Adopción</span><img src="img/d1.jpg" alt="" style="width:100%;height:440px;object-fit:cover;border-radius:20px;"></div>
+        <div class="col grow" style="gap:18px;padding-top:28px;"><div class="h1">Toby</div><span class="muted">Chacao, Caracas · a 2 km de ti</span></div>
+      </div>
+    </div>
+    <div class="overlay"></div>
+    <div class="modal">
+      <div class="row between"><div class="h2">Postularte para adoptar a Toby</div><div class="iconbtn"><svg class="i"><use href="#i-x"/></svg></div></div>
+      <div class="row card pad flat" style="gap:12px;background:var(--surface-2);border:none;"><img src="img/d1.jpg" alt="" style="width:56px;height:56px;object-fit:cover;border-radius:12px;"><div class="col" style="gap:0"><span class="strong small">Toby · Mestizo · 2 años</span><span class="xs muted">Publicado por Luis García</span></div></div>
+      <p class="small muted">Se abrirá un chat con Luis para que coordinen la visita. Cuéntale por qué quieres adoptar a Toby.</p>
+      <div class="field"><label>Mensaje para Luis</label><div class="input ta" style="min-height:110px;"><span>Hola Luis, vivo en Ocumare del Tuy tengo patio y salgo a caminar todas las mañanas, me encantaría conocer a Toby este fin de semana</span></div></div>
+      <div class="row wrap" style="gap:8px"><span class="chip on"><svg class="i xs"><use href="#i-check"/></svg>Tengo patio</span><span class="chip on"><svg class="i xs"><use href="#i-check"/></svg>Sin otras mascotas</span><span class="chip">Tengo niños</span><span class="chip">Vivo en apartamento</span></div>
+      <div class="row between" style="margin-top:4px"><span class="xs muted">Puedes cancelar la postulación desde el chat.</span><div class="row"><span class="btn ghost">Cancelar</span><span class="btn">Enviar postulación</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 09 Mensajes + conversación -->
+<div class="screen-block">
+    <div class="frame desktop" id="d09" data-label="09 · Mensajes (lista + conversación)">
+    <div class="topbar"><div class="brand"><img class="logo-mark" src="img/logo-mark.png" alt=""><img class="logo-word" src="img/logo-word.png" alt="Pawly"></div><div class="search" style="width:420px;margin-left:24px;"><svg class="i sm"><use href="#i-search"/></svg>Buscar personas, mascotas o publicaciones</div><div class="grow"></div><div class="iconbtn bordered"><svg class="i"><use href="#i-bell"/></svg></div><img class="avatar" src="img/avatar-h.svg" alt=""></div>
+    <div class="body">
+      <div class="sidebar"><div class="item"><svg class="i"><use href="#i-home"/></svg>Inicio</div><div class="item"><svg class="i"><use href="#i-search"/></svg>Buscar</div><div class="item"><svg class="i fill"><use href="#i-paw"/></svg>Adopción</div><div class="item on"><svg class="i"><use href="#i-chat"/></svg>Mensajes<span class="badge">2</span></div><div class="item"><svg class="i"><use href="#i-bell"/></svg>Notificaciones</div><div class="item"><svg class="i"><use href="#i-user"/></svg>Mi perfil</div></div>
+      <div style="flex:0 0 360px;border-right:1px solid var(--line);padding:20px 16px;display:flex;flex-direction:column;gap:6px;overflow:hidden;">
+        <div class="row between"><div class="h2">Mensajes</div><div class="iconbtn bordered"><svg class="i"><use href="#i-edit"/></svg></div></div>
+        <div class="search" style="margin:6px 0"><svg class="i sm"><use href="#i-search"/></svg>Buscar conversación</div>
+        <p class="eyebrow" style="margin:8px 0 2px;">Peticiones · 1</p>
+        <div class="convo"><img class="avatar lg" src="img/avatar-m.svg" alt=""><div class="col grow" style="gap:1px"><span class="name">Luna Martínez</span><span class="last">Quiere chatear contigo</span></div><div class="row" style="gap:6px"><div class="btn icon sm" style="background:var(--green);border-color:var(--green)"><svg class="i sm"><use href="#i-check"/></svg></div><div class="btn icon sm ghost"><svg class="i sm"><use href="#i-x"/></svg></div></div></div>
+        <p class="eyebrow" style="margin:12px 0 2px;">Chats</p>
+        <div class="convo active"><img class="avatar lg" src="img/avatar-h.svg" alt=""><div class="col grow" style="gap:1px"><div class="row between"><span class="name">Luis García</span><span class="time">10:45</span></div><span class="last truncate">Claro!! a las 10 de la mañana te sirve?</span><span class="tag green" style="align-self:flex-start;margin-top:3px">Adopción · Toby</span></div></div>
+        <div class="convo"><img class="avatar lg" src="img/avatar-m.svg" alt=""><div class="col grow" style="gap:1px"><div class="row between"><span class="name">Valentina Ochoa</span><span class="time">ayer</span></div><span class="last truncate">Te mando la foto de Mía en el parque</span></div><span class="badge">2</span></div>
+        <div class="convo"><img class="avatar lg" src="img/avatar-h.svg" alt=""><div class="col grow" style="gap:1px"><div class="row between"><span class="name">José Gutiérrez</span><span class="time">lun</span></div><span class="last truncate">Gracias por el dato del veterinario</span></div></div>
+        <div class="convo"><img class="avatar lg" src="img/avatar-m.svg" alt=""><div class="col grow" style="gap:1px"><div class="row between"><span class="name">Andrea Salas</span><span class="time">8 sep</span></div><span class="last truncate">Nos vemos en la caminata del sábado</span></div></div>
+      </div>
+      <div class="content" style="padding:0;gap:0;">
+        <div class="row" style="padding:16px 28px;border-bottom:1px solid var(--line);background:var(--surface);"><img class="avatar" src="img/avatar-h.svg" alt=""><div class="col" style="gap:0"><span class="strong">Luis García</span><span class="xs muted">Chat abierto por tu postulación a <strong>Toby</strong></span></div><div class="grow"></div><span class="btn sm ghost">Ver a Toby</span><span class="btn sm ghost">Cancelar postulación</span><div class="iconbtn"><svg class="i"><use href="#i-more"/></svg></div></div>
+        <div class="col grow" style="padding:24px 28px;gap:12px;overflow:hidden;">
+          <div class="sysmsg">Te postulaste para adoptar a <strong>Toby</strong> el 12 sep 2026. Este chat se abrió automáticamente para que coordinen.</div>
+          <div class="bubble me">Hola Luis, vivo en Ocumare del Tuy tengo patio y salgo a caminar todas las mañanas, me encantaría conocer a Toby este fin de semana<span class="time">10:30</span></div>
+          <div class="bubble them">Hola Darvin, qué bueno. Toby necesita justamente eso mucho paseo<span class="time">10:38</span></div>
+          <div class="bubble them">Puedes venir este sábado a conocerlo? estamos en Chacao cerca del metro<span class="time">10:42</span></div>
+          <div class="bubble me">Claro!! a las 10 de la mañana te sirve?<span class="time">10:45</span></div>
+        </div>
+        <div class="row" style="padding:16px 28px;border-top:1px solid var(--line);background:var(--surface);"><div class="iconbtn bordered"><svg class="i"><use href="#i-image"/></svg></div><div class="input grow"><span class="ph">Escribe un mensaje…</span></div><div class="btn"><svg class="i sm"><use href="#i-send"/></svg>Enviar</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 10 Notificaciones -->
+<div class="screen-block">
+    <div class="frame desktop" id="d10" data-label="10 · Notificaciones">
+    <div class="topbar"><div class="brand"><img class="logo-mark" src="img/logo-mark.png" alt=""><img class="logo-word" src="img/logo-word.png" alt="Pawly"></div><div class="search" style="width:420px;margin-left:24px;"><svg class="i sm"><use href="#i-search"/></svg>Buscar personas, mascotas o publicaciones</div><div class="grow"></div><div class="iconbtn bordered"><svg class="i"><use href="#i-bell"/></svg></div><img class="avatar" src="img/avatar-h.svg" alt=""></div>
+    <div class="body">
+      <div class="sidebar"><div class="item"><svg class="i"><use href="#i-home"/></svg>Inicio</div><div class="item"><svg class="i"><use href="#i-search"/></svg>Buscar</div><div class="item"><svg class="i fill"><use href="#i-paw"/></svg>Adopción</div><div class="item"><svg class="i"><use href="#i-chat"/></svg>Mensajes</div><div class="item on"><svg class="i"><use href="#i-bell"/></svg>Notificaciones<span class="badge">3</span></div><div class="item"><svg class="i"><use href="#i-user"/></svg>Mi perfil</div></div>
+      <div class="content">
+        <div class="center" style="max-width:720px;margin:0;gap:6px;">
+          <div class="row between" style="margin-bottom:10px"><div class="h1">Notificaciones</div><span class="link small">Marcar todas como leídas</span></div>
+          <div class="tabs" style="margin-bottom:8px"><div class="tab on">Todas</div><div class="tab">Adopción</div><div class="tab">Comentarios</div><div class="tab">Chats</div></div>
+          <p class="eyebrow" style="margin:8px 0 2px;">Hoy</p>
+          <div class="notif unread" style="padding:14px 8px;border-radius:12px;"><div class="ic green"><svg class="i sm fill"><use href="#i-paw"/></svg></div><div class="col grow" style="gap:2px"><span class="t"><strong>Luis García</strong> respondió a tu postulación para adoptar a <strong>Toby</strong>.</span><span class="time">hace 12 min</span></div><span class="btn sm soft">Abrir chat</span></div>
+          <div class="notif unread" style="padding:14px 8px;border-radius:12px;"><div class="ic blue"><svg class="i sm"><use href="#i-chat"/></svg></div><div class="col grow" style="gap:2px"><span class="t"><strong>Valentina Ochoa</strong> comentó tu publicación: "Feliz cumpleaños Luna 🎂🐾 qué linda se ve"</span><span class="time">hace 1 h</span></div><span class="btn sm ghost">Ver</span></div>
+          <div class="notif unread" style="padding:14px 8px;border-radius:12px;"><div class="ic accent"><svg class="i sm"><use href="#i-users"/></svg></div><div class="col grow" style="gap:2px"><span class="t"><strong>Luna Martínez</strong> te envió una petición de chat.</span><span class="time">hace 3 h</span></div><div class="row" style="gap:6px"><span class="btn sm dark">Aceptar</span><span class="btn sm ghost">Rechazar</span></div></div>
+          <p class="eyebrow" style="margin:14px 0 2px;">Ayer</p>
+          <div class="notif" style="padding:14px 8px;"><div class="ic accent"><svg class="i sm"><use href="#i-heart"/></svg></div><div class="col grow" style="gap:2px"><span class="t"><strong>José Gutiérrez</strong> empezó a seguirte.</span><span class="time">ayer, 6:20 p. m.</span></div><span class="btn sm ghost">Seguir también</span></div>
+          <div class="notif" style="padding:14px 8px;"><div class="ic green"><svg class="i sm fill"><use href="#i-paw"/></svg></div><div class="col grow" style="gap:2px"><span class="t">Hay <strong>3 mascotas nuevas</strong> en adopción cerca de ti: Bruno, Coco y Max.</span><span class="time">ayer, 9:05 a. m.</span></div><span class="btn sm ghost">Ver</span></div>
+          <div class="notif" style="padding:14px 8px;"><div class="ic blue"><svg class="i sm"><use href="#i-chat"/></svg></div><div class="col grow" style="gap:2px"><span class="t"><strong>Pedro Ramírez</strong> respondió a tu comentario en la publicación de Andrea.</span><span class="time">ayer, 8:12 a. m.</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 11 Mi perfil -->
+<div class="screen-block">
+    <div class="frame desktop" id="d11" data-label="11 · Mi perfil">
+    <div class="topbar"><div class="brand"><img class="logo-mark" src="img/logo-mark.png" alt=""><img class="logo-word" src="img/logo-word.png" alt="Pawly"></div><div class="search" style="width:420px;margin-left:24px;"><svg class="i sm"><use href="#i-search"/></svg>Buscar personas, mascotas o publicaciones</div><div class="grow"></div><div class="iconbtn bordered"><svg class="i"><use href="#i-bell"/></svg></div><img class="avatar" src="img/avatar-h.svg" alt=""></div>
+    <div class="body">
+      <div class="sidebar"><div class="item"><svg class="i"><use href="#i-home"/></svg>Inicio</div><div class="item"><svg class="i"><use href="#i-search"/></svg>Buscar</div><div class="item"><svg class="i fill"><use href="#i-paw"/></svg>Adopción</div><div class="item"><svg class="i"><use href="#i-chat"/></svg>Mensajes</div><div class="item"><svg class="i"><use href="#i-bell"/></svg>Notificaciones</div><div class="item on"><svg class="i"><use href="#i-user"/></svg>Mi perfil</div></div>
+      <div class="content" style="flex-direction:row;gap:28px;align-items:flex-start;">
+        <div class="col" style="flex:0 0 340px;gap:16px;">
+          <div class="card pad" style="padding:22px;display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center;">
+            <img class="avatar" src="img/avatar-h.svg" alt="" style="width:112px;height:112px;">
+            <div class="col" style="gap:2px;align-items:center"><div class="h2">Darvin Hernández</div><span class="small muted">@darvinh · Ocumare del Tuy, Miranda</span></div>
+            <p class="small">Dueño de Mía y Simón 🐶🐱 voluntario en rescates los fines de semana</p>
+            <div class="row" style="gap:24px"><div class="col" style="gap:0;align-items:center"><span class="strong" style="font-size:18px">128</span><span class="xs muted">Seguidores</span></div><div class="col" style="gap:0;align-items:center"><span class="strong" style="font-size:18px">96</span><span class="xs muted">Siguiendo</span></div><div class="col" style="gap:0;align-items:center"><span class="strong" style="font-size:18px">2</span><span class="xs muted">Mascotas</span></div></div>
+            <div class="row" style="width:100%"><span class="btn sm ghost grow"><svg class="i xs"><use href="#i-edit"/></svg>Editar perfil</span><span class="btn sm ghost grow"><svg class="i xs"><use href="#i-settings"/></svg>Ajustes</span></div>
+          </div>
+          <div class="aside-box">
+            <div class="row between"><span class="t">Datos del perfil</span></div>
+            <div class="row between small"><span class="muted">Nombre</span><span>Darvin Hernández</span></div>
+            <div class="row between small"><span class="muted">Cédula</span><span>V-27.455.120</span></div>
+            <div class="row between small"><span class="muted">Nacimiento</span><span>21 nov 1998</span></div>
+            <div class="row between small"><span class="muted">Género</span><span>Masculino</span></div>
+            <div class="row between small"><span class="muted">Ciudad</span><span>Ocumare del Tuy</span></div>
+          </div>
+        </div>
+        <div class="col grow" style="gap:18px;">
+          <div class="row between"><div class="h2">Mis mascotas</div><span class="btn sm"><svg class="i xs"><use href="#i-plus"/></svg>Agregar mascota</span></div>
+          <div class="grid3">
+            <div class="petcard"><div class="thumbwrap"><img src="img/d5.jpg" alt=""><span class="tag green">En adopción</span></div><div class="info"><span class="name">Mía</span><span class="sub">Pastor alemán · 5 años · Hembra</span></div></div>
+            <div class="petcard"><img src="img/c2.jpg" alt=""><div class="info"><span class="name">Simón</span><span class="sub">Gato · 8 meses · Macho</span></div></div>
+            <div class="petcard" style="align-items:center;justify-content:center;border-style:dashed;box-shadow:none;background:transparent;color:var(--muted);min-height:200px;"><svg class="i lg"><use href="#i-plus"/></svg><span class="small" style="margin-top:6px">Registrar una mascota</span></div>
+          </div>
+          <div class="tabs"><div class="tab on">Publicaciones · 24</div><div class="tab">Postulaciones · 1</div><div class="tab">Guardados</div></div>
+          <div class="post" style="padding:18px;"><div class="row"><img class="avatar sm" src="img/avatar-h.svg" alt=""><span class="meta">hace 3 días</span></div><p>Simón se apropió de la caja del televisor nuevo y no la suelta 😹</p><div class="actions"><span><svg class="i sm"><use href="#i-heart"/></svg> 31</span><span><svg class="i sm"><use href="#i-chat"/></svg> 5</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 12 Editar mascota -->
+<div class="screen-block">
+    <div class="frame desktop" id="d12" data-label="12 · Editar mascota + marcar en adopción">
+    <div class="topbar"><div class="brand"><img class="logo-mark" src="img/logo-mark.png" alt=""><img class="logo-word" src="img/logo-word.png" alt="Pawly"></div><div class="search" style="width:420px;margin-left:24px;"><svg class="i sm"><use href="#i-search"/></svg>Buscar personas, mascotas o publicaciones</div><div class="grow"></div><div class="iconbtn bordered"><svg class="i"><use href="#i-bell"/></svg></div><img class="avatar" src="img/avatar-h.svg" alt=""></div>
+    <div class="body">
+      <div class="sidebar"><div class="item"><svg class="i"><use href="#i-home"/></svg>Inicio</div><div class="item"><svg class="i"><use href="#i-search"/></svg>Buscar</div><div class="item"><svg class="i fill"><use href="#i-paw"/></svg>Adopción</div><div class="item"><svg class="i"><use href="#i-chat"/></svg>Mensajes</div><div class="item"><svg class="i"><use href="#i-bell"/></svg>Notificaciones</div><div class="item on"><svg class="i"><use href="#i-user"/></svg>Mi perfil</div></div>
+      <div class="content">
+        <span class="link small row" style="gap:4px"><svg class="i xs"><use href="#i-back"/></svg>Volver a mi perfil</span>
+        <div class="row between"><div class="h1">Editar a Mía</div><div class="row"><span class="btn ghost">Cancelar</span><span class="btn">Guardar cambios</span></div></div>
+        <div style="display:grid;grid-template-columns:300px 1fr 1fr;gap:28px;align-items:start;">
+          <div class="card pad" style="display:flex;flex-direction:column;gap:12px;align-items:center;">
+            <img src="img/d5.jpg" alt="" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;">
+            <span class="btn sm ghost block"><svg class="i xs"><use href="#i-camera"/></svg>Cambiar foto</span>
+            <span class="xs muted">JPG o PNG, máximo 5 MB.</span>
+          </div>
+          <div class="card pad" style="padding:20px;display:flex;flex-direction:column;gap:14px;">
+            <div class="h3">Datos básicos</div>
+            <div class="field"><label>Nombre</label><div class="input"><span>Mía</span></div></div>
+            <div class="grid2">
+              <div class="field"><label>Especie</label><div class="seg"><span class="opt on">Perro</span><span class="opt">Gato</span></div></div>
+              <div class="field"><label>Sexo</label><div class="seg"><span class="opt">Macho</span><span class="opt on">Hembra</span></div></div>
+            </div>
+            <div class="field"><label>Fecha de nacimiento</label><div class="input"><svg class="i sm muted"><use href="#i-calendar"/></svg><span>14 / 03 / 2021</span></div><span class="hint">5 años y 6 meses</span></div>
+            <div class="field"><label>Temperamento</label><div class="row wrap" style="gap:6px"><span class="chip on">Juguetona</span><span class="chip on">Sociable</span><span class="chip">Tímida</span><span class="chip">Tranquila</span><span class="chip">Protectora</span></div></div>
+            <div class="field"><label>Descripción</label><div class="input ta" style="min-height:96px;"><span>Pastor alemán de 5 años muy cariñosa y acostumbrada a niños 🐕 le encanta el parque y dormir en el sofá</span></div></div>
+          </div>
+          <div class="col" style="gap:16px;">
+            <div class="card pad" style="padding:20px;display:flex;flex-direction:column;gap:14px;border-color:var(--green);background:var(--green-soft);">
+              <div class="row between"><div class="col" style="gap:0"><div class="h3">Poner en adopción</div><span class="small muted">Mía aparecerá en el feed de Adopción para personas cercanas.</span></div><div class="toggle on"></div></div>
+              <div class="field"><label>Características que busca en su familia</label><div class="input ta" style="min-height:96px;"><span>Familia con tiempo para pasear y sin niños muy pequeños, preferiblemente en Caracas o los Valles del Tuy</span></div></div>
+              <div class="field"><label>Ubicación de la mascota</label><div class="input"><svg class="i sm muted"><use href="#i-pin"/></svg><span>Ocumare del Tuy, Miranda</span></div></div>
+            </div>
+            <div class="card pad" style="padding:20px;display:flex;flex-direction:column;gap:10px;">
+              <div class="h3" style="color:var(--red)">Zona de peligro</div>
+              <span class="small muted">Eliminar el perfil de Mía borra sus publicaciones etiquetadas y sus postulaciones.</span>
+              <span class="btn sm danger" style="align-self:flex-start"><svg class="i xs"><use href="#i-trash"/></svg>Eliminar mascota</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 13 Admin -->
+<div class="screen-block">
+    <div class="frame desktop" id="d13" data-label="13 · Administración · Usuarios y reportes">
+    <div class="topbar"><div class="brand"><img class="logo-mark" src="img/logo-mark.png" alt=""><img class="logo-word" src="img/logo-word.png" alt="Pawly"><span class="admin">Admin</span></div><div class="search" style="width:360px;margin-left:24px;"><svg class="i sm"><use href="#i-search"/></svg>Buscar usuario, publicación o reporte</div><div class="grow"></div><div class="col" style="gap:0;align-items:flex-end"><span class="strong small">Gabriela Torres</span><span class="xs muted">Administradora</span></div><img class="avatar" src="img/avatar-m.svg" alt=""></div>
+    <div class="body">
+      <div class="sidebar">
+        <div class="item on"><svg class="i"><use href="#i-dash"/></svg>Panel</div>
+        <div class="item"><svg class="i"><use href="#i-users"/></svg>Usuarios</div>
+        <div class="item"><svg class="i"><use href="#i-file"/></svg>Publicaciones</div>
+        <div class="item"><svg class="i"><use href="#i-chat"/></svg>Comentarios</div>
+        <div class="item"><svg class="i"><use href="#i-flag"/></svg>Reportes<span class="badge">4</span></div>
+        <div class="foot item muted"><svg class="i"><use href="#i-logout"/></svg>Cerrar sesión</div>
+      </div>
+      <div class="content">
+        <div class="row between"><div class="col" style="gap:2px"><div class="h1">Panel</div><span class="muted">Resumen de la comunidad · 22 sep 2026</span></div><span class="btn"><svg class="i sm"><use href="#i-plus"/></svg>Agregar usuario</span></div>
+        <div class="grid4">
+          <div class="stat"><span class="n">1 248</span><span class="l">Usuarios activos</span><span class="d">+64 este mes</span></div>
+          <div class="stat"><span class="n">2 913</span><span class="l">Mascotas registradas</span><span class="d">+180 este mes</span></div>
+          <div class="stat"><span class="n">37</span><span class="l">Adopciones concretadas</span><span class="d">+9 vs. agosto</span></div>
+          <div class="stat"><span class="n" style="color:var(--red)">4</span><span class="l">Reportes pendientes</span><span class="d" style="color:var(--amber)">2 con más de 48 h</span></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:24px;align-items:start;">
+          <div class="col" style="gap:12px">
+            <div class="row between"><div class="h3">Usuarios</div><div class="row" style="gap:6px"><span class="chip on">Todos</span><span class="chip">Activos</span><span class="chip">Reportados</span><span class="chip">Vetados</span></div></div>
+            <table class="table">
+              <tr><th>Usuario</th><th>Correo</th><th>Mascotas</th><th>Estado</th><th>Acciones</th></tr>
+              <tr><td><div class="row"><img class="avatar sm" src="img/avatar-m.svg" alt=""><span class="strong">Andrea Salas</span></div></td><td class="muted">andrea.salas@gmail.com</td><td>1</td><td><span class="tag green">Activa</span></td><td><div class="row" style="gap:4px"><span class="iconbtn" style="width:30px;height:30px"><svg class="i sm"><use href="#i-edit"/></svg></span><span class="iconbtn" style="width:30px;height:30px"><svg class="i sm"><use href="#i-ban"/></svg></span><span class="iconbtn" style="width:30px;height:30px"><svg class="i sm"><use href="#i-trash"/></svg></span></div></td></tr>
+              <tr><td><div class="row"><img class="avatar sm" src="img/avatar-h.svg" alt=""><span class="strong">Luis García</span></div></td><td class="muted">luis.garcia@gmail.com</td><td>3</td><td><span class="tag green">Activo</span></td><td><div class="row" style="gap:4px"><span class="iconbtn" style="width:30px;height:30px"><svg class="i sm"><use href="#i-edit"/></svg></span><span class="iconbtn" style="width:30px;height:30px"><svg class="i sm"><use href="#i-ban"/></svg></span><span class="iconbtn" style="width:30px;height:30px"><svg class="i sm"><use href="#i-trash"/></svg></span></div></td></tr>
+              <tr><td><div class="row"><img class="avatar sm" src="img/avatar-h.svg" alt=""><span class="strong">Pedro Ramírez</span></div></td><td class="muted">pramirez88@gmail.com</td><td>2</td><td><span class="tag amber">3 reportes</span></td><td><div class="row" style="gap:4px"><span class="iconbtn" style="width:30px;height:30px"><svg class="i sm"><use href="#i-edit"/></svg></span><span class="iconbtn" style="width:30px;height:30px"><svg class="i sm"><use href="#i-ban"/></svg></span><span class="iconbtn" style="width:30px;height:30px"><svg class="i sm"><use href="#i-trash"/></svg></span></div></td></tr>
+              <tr><td><div class="row"><img class="avatar sm" src="img/avatar-h.svg" alt=""><span class="strong">Darvin Hernández</span></div></td><td class="muted">darvin.hernandez@gmail.com</td><td>2</td><td><span class="tag green">Activa</span></td><td><div class="row" style="gap:4px"><span class="iconbtn" style="width:30px;height:30px"><svg class="i sm"><use href="#i-edit"/></svg></span><span class="iconbtn" style="width:30px;height:30px"><svg class="i sm"><use href="#i-ban"/></svg></span><span class="iconbtn" style="width:30px;height:30px"><svg class="i sm"><use href="#i-trash"/></svg></span></div></td></tr>
+              <tr><td><div class="row"><img class="avatar sm" src="img/avatar-h.svg" alt=""><span class="strong">Daniela Bracho</span></div></td><td class="muted">dbracho@gmail.com</td><td>0</td><td><span class="tag red">Vetada</span></td><td><div class="row" style="gap:4px"><span class="iconbtn" style="width:30px;height:30px"><svg class="i sm"><use href="#i-edit"/></svg></span><span class="iconbtn" style="width:30px;height:30px"><svg class="i sm"><use href="#i-check"/></svg></span><span class="iconbtn" style="width:30px;height:30px"><svg class="i sm"><use href="#i-trash"/></svg></span></div></td></tr>
+            </table>
+          </div>
+          <div class="col" style="gap:12px">
+            <div class="h3">Reportes pendientes</div>
+            <div class="card pad" style="display:flex;flex-direction:column;gap:8px;">
+              <div class="row between"><span class="tag red">Publicación</span><span class="xs muted">hace 3 días</span></div>
+              <span class="small"><strong>Pedro Ramírez</strong> · "Vendo cachorros de raza escríbeme al…"</span>
+              <span class="xs muted">3 reportes · Motivo: venta de animales</span>
+              <div class="row" style="gap:6px"><span class="btn sm dark"><svg class="i xs"><use href="#i-ban"/></svg>Bloquear publicación</span><span class="btn sm ghost">Descartar</span></div>
+            </div>
+            <div class="card pad" style="display:flex;flex-direction:column;gap:8px;">
+              <div class="row between"><span class="tag amber">Comentario</span><span class="xs muted">hace 1 día</span></div>
+              <span class="small"><strong>Usuario anónimo_22</strong> · "Ese perro es feo nadie lo va a…"</span>
+              <span class="xs muted">1 reporte · Motivo: acoso</span>
+              <div class="row" style="gap:6px"><span class="btn sm dark"><svg class="i xs"><use href="#i-ban"/></svg>Bloquear comentario</span><span class="btn sm ghost">Descartar</span></div>
+            </div>
+            <div class="card pad" style="display:flex;flex-direction:column;gap:8px;">
+              <div class="row between"><span class="tag red">Cuenta</span><span class="xs muted">hace 5 h</span></div>
+              <span class="small"><strong>promo_mascotas_ve</strong> · Publicidad repetida en comentarios</span>
+              <span class="xs muted">2 reportes · Motivo: spam</span>
+              <div class="row" style="gap:6px"><span class="btn sm danger"><svg class="i xs"><use href="#i-ban"/></svg>Vetar cuenta</span><span class="btn sm ghost">Descartar</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 14 Recuperar contraseña -->
+<div class="screen-block">
+    <div class="frame desktop" id="d14" data-label="14 · Recuperar contraseña">
+    <div class="topbar"><div class="brand"><img class="logo-mark" src="img/logo-mark.png" alt=""><img class="logo-word" src="img/logo-word.png" alt="Pawly"></div><div class="grow"></div><span class="small muted">¿Ya la recordaste? <span class="link">Inicia sesión</span></span></div>
+    <div class="content" style="justify-content:center;align-items:center;">
+      <div class="card" style="width:460px;padding:36px;display:flex;flex-direction:column;gap:18px;align-items:center;text-align:center;">
+        <div class="notif" style="border:none;padding:0"><div class="ic accent" style="width:64px;height:64px"><svg class="i lg"><use href="#i-lock"/></svg></div></div>
+        <div class="col" style="gap:4px"><div class="h2">Recuperar contraseña</div><p class="muted">Escribe el correo con el que te registraste y te enviamos un enlace para crear una contraseña nueva.</p></div>
+        <div class="field" style="width:100%;text-align:left"><label>Correo electrónico</label><div class="input"><svg class="i sm muted"><use href="#i-mail"/></svg><span>laura.barreto@gmail.com</span></div></div>
+        <div class="btn block">Enviar enlace</div>
+        <p class="xs muted">El enlace vence en 30 minutos. Si no lo ves, revisa la carpeta de spam.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 15 Registro paso 2 / Editar perfil humano -->
+<div class="screen-block">
+    <div class="frame desktop" id="d15" data-label="15 · Registro (paso 2 de 2) · Perfil humano">
+    <div class="topbar"><div class="brand"><img class="logo-mark" src="img/logo-mark.png" alt=""><img class="logo-word" src="img/logo-word.png" alt="Pawly"></div><div class="grow"></div><span class="small muted">El mismo formulario se usa en "Editar perfil"</span></div>
+    <div class="content" style="justify-content:center;align-items:center;">
+      <div class="card" style="width:640px;padding:36px;display:flex;flex-direction:column;gap:18px;">
+        <div class="col" style="gap:8px;"><div class="row between"><span class="eyebrow">Paso 2 de 2 · Tu perfil</span><span class="small muted">Último paso</span></div><div class="progress"><div class="fill" style="width:100%"></div></div></div>
+        <div class="h1">Cuéntanos quién eres</div>
+        <div class="row" style="gap:20px;align-items:flex-start">
+          <div class="col" style="align-items:center;gap:8px;flex:0 0 140px"><img class="avatar" src="img/avatar-m.svg" alt="" style="width:120px;height:120px"><span class="btn sm ghost"><svg class="i xs"><use href="#i-camera"/></svg>Subir foto</span></div>
+          <div class="grid2 grow">
+            <div class="field" style="grid-column:1/3"><label>Nombre completo</label><div class="input"><span>Laura Barreto</span></div></div>
+            <div class="field"><label>Cédula</label><div class="input"><span>V-28.310.442</span></div></div>
+            <div class="field"><label>Fecha de nacimiento</label><div class="input"><svg class="i sm muted"><use href="#i-calendar"/></svg><span>02 / 07 / 2000</span></div></div>
+            <div class="field"><label>Género</label><div class="seg"><span class="opt on">Femenino</span><span class="opt">Masculino</span><span class="opt">Otro</span></div></div>
+            <div class="field"><label>Ciudad</label><div class="input"><svg class="i sm muted"><use href="#i-pin"/></svg><span>Los Teques, Miranda</span></div></div>
+            <div class="field" style="grid-column:1/3"><label>Descripción</label><div class="input ta" style="min-height:72px"><span>Amante de los gatos, tengo dos y quiero adoptar un tercero 🐱</span></div></div>
+          </div>
+        </div>
+        <div class="row between"><span class="link small">Volver al paso 1</span><div class="btn">Listo, entrar a Pawly</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 16 Crear publicación -->
+<div class="screen-block">
+    <div class="frame desktop" id="d16" data-label="16 · Crear publicación">
+    <div class="topbar"><div class="brand"><img class="logo-mark" src="img/logo-mark.png" alt=""><img class="logo-word" src="img/logo-word.png" alt="Pawly"></div><div class="search" style="width:420px;margin-left:24px;"><svg class="i sm"><use href="#i-search"/></svg>Buscar personas, mascotas o publicaciones</div><div class="grow"></div><div class="iconbtn bordered"><svg class="i"><use href="#i-bell"/></svg></div><img class="avatar" src="img/avatar-h.svg" alt=""></div>
+    <div class="body">
+      <div class="sidebar"><div class="item on"><svg class="i"><use href="#i-home"/></svg>Inicio</div><div class="item"><svg class="i"><use href="#i-search"/></svg>Buscar</div><div class="item"><svg class="i fill"><use href="#i-paw"/></svg>Adopción</div><div class="item"><svg class="i"><use href="#i-chat"/></svg>Mensajes</div><div class="item"><svg class="i"><use href="#i-bell"/></svg>Notificaciones</div><div class="item"><svg class="i"><use href="#i-user"/></svg>Mi perfil</div></div>
+      <div class="content"><div class="center"><div class="composer" style="padding:10px 10px 10px 12px;"><img class="avatar" src="img/avatar-h.svg" alt=""><span class="ph" style="font-size:14px">¿Qué está haciendo tu mascota hoy?</span></div></div></div>
+    </div>
+    <div class="overlay"></div>
+    <div class="modal" style="width:620px">
+      <div class="row between"><div class="h2">Nueva publicación</div><div class="iconbtn"><svg class="i"><use href="#i-x"/></svg></div></div>
+      <div class="row"><img class="avatar" src="img/avatar-h.svg" alt=""><div class="col" style="gap:0"><span class="strong">Darvin Hernández</span><span class="xs muted">Publica en tu muro</span></div></div>
+      <p style="font-size:16px;line-height:1.45">Mía y Simón por fin se llevan bien 🐶🐱 después de dos semanas durmiendo juntos <span style="color:var(--accent-2);font-weight:600">@laurabarreto</span> tenías razón</p>
+      <div class="row" style="gap:10px;align-items:flex-start"><div style="position:relative;flex:0 0 220px"><img class="photo" src="img/d5.jpg" alt="" style="aspect-ratio:4/3"><div class="iconbtn bordered" style="position:absolute;right:6px;top:6px;width:26px;height:26px"><svg class="i xs"><use href="#i-x"/></svg></div></div>
+        <div class="col grow" style="gap:6px"><span class="eyebrow">Etiquetados</span><div class="row wrap" style="gap:6px"><span class="chip"><img class="avatar xs" src="img/avatar-m.svg" alt="">Laura Barreto <svg class="i xs"><use href="#i-x"/></svg></span><span class="chip"><img class="avatar xs" src="img/d5.jpg" alt="">Mía <svg class="i xs"><use href="#i-x"/></svg></span><span class="chip"><img class="avatar xs" src="img/c2.jpg" alt="">Simón <svg class="i xs"><use href="#i-x"/></svg></span></div><div class="input sm" style="margin-top:4px"><svg class="i xs muted"><use href="#i-search"/></svg><span class="ph">Etiquetar a una persona o mascota</span></div></div>
+      </div>
+      <div class="row between" style="border-top:1px solid var(--line);padding-top:14px">
+        <div class="row" style="gap:6px"><span class="chip"><svg class="i xs"><use href="#i-image"/></svg>Foto</span><span class="chip"><svg class="i xs"><use href="#i-camera"/></svg>Video</span><span class="chip"><svg class="i xs"><use href="#i-bell"/></svg>Audio</span><span class="chip"><svg class="i xs"><use href="#i-send"/></svg>Enlace</span><span class="chip on"><svg class="i xs"><use href="#i-users"/></svg>Etiquetar</span></div>
+        <div class="btn">Publicar</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 17 Perfil de otro usuario -->
+<div class="screen-block">
+    <div class="frame desktop" id="d17" data-label="17 · Perfil de otro usuario">
+    <div class="topbar"><div class="brand"><img class="logo-mark" src="img/logo-mark.png" alt=""><img class="logo-word" src="img/logo-word.png" alt="Pawly"></div><div class="search" style="width:420px;margin-left:24px;"><svg class="i sm"><use href="#i-search"/></svg>Buscar personas, mascotas o publicaciones</div><div class="grow"></div><div class="iconbtn bordered"><svg class="i"><use href="#i-bell"/></svg></div><img class="avatar" src="img/avatar-h.svg" alt=""></div>
+    <div class="body">
+      <div class="sidebar"><div class="item"><svg class="i"><use href="#i-home"/></svg>Inicio</div><div class="item on"><svg class="i"><use href="#i-search"/></svg>Buscar</div><div class="item"><svg class="i fill"><use href="#i-paw"/></svg>Adopción</div><div class="item"><svg class="i"><use href="#i-chat"/></svg>Mensajes</div><div class="item"><svg class="i"><use href="#i-bell"/></svg>Notificaciones</div><div class="item"><svg class="i"><use href="#i-user"/></svg>Mi perfil</div></div>
+      <div class="content" style="flex-direction:row;gap:28px;align-items:flex-start;">
+        <div class="col" style="flex:0 0 340px;gap:16px;">
+          <div class="card pad" style="padding:22px;display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center;">
+            <img class="avatar" src="img/avatar-m.svg" alt="" style="width:112px;height:112px;">
+            <div class="col" style="gap:2px;align-items:center"><div class="h2">Laura Barreto</div><span class="small muted">@laurabarreto · Los Teques, Miranda</span></div>
+            <p class="small">Amante de los gatos, tengo dos y quiero adoptar un tercero 🐱</p>
+            <div class="row" style="gap:24px"><div class="col" style="gap:0;align-items:center"><span class="strong" style="font-size:18px">54</span><span class="xs muted">Seguidores</span></div><div class="col" style="gap:0;align-items:center"><span class="strong" style="font-size:18px">80</span><span class="xs muted">Siguiendo</span></div><div class="col" style="gap:0;align-items:center"><span class="strong" style="font-size:18px">2</span><span class="xs muted">Mascotas</span></div></div>
+            <div class="row" style="width:100%"><span class="btn sm grow"><svg class="i xs"><use href="#i-heart"/></svg>Seguir</span><span class="btn sm ghost grow"><svg class="i xs"><use href="#i-chat"/></svg>Petición de chat</span></div>
+            <span class="xs link"><svg class="i xs"><use href="#i-flag"/></svg> Reportar cuenta</span>
+          </div>
+        </div>
+        <div class="col grow" style="gap:18px;">
+          <div class="h2">Sus mascotas</div>
+          <div class="grid3">
+            <div class="petcard"><div class="thumbwrap"><img src="img/c1.jpg" alt=""><span class="tag green">En adopción</span></div><div class="info"><span class="name">Nala</span><span class="sub">Gata · 1 año · Hembra</span></div></div>
+            <div class="petcard"><img src="img/c2.jpg" alt=""><div class="info"><span class="name">Tigre</span><span class="sub">Gato · 4 años · Macho</span></div></div>
+          </div>
+          <div class="tabs"><div class="tab on">Publicaciones · 12</div></div>
+          <div class="post" style="padding:18px;"><div class="row"><img class="avatar sm" src="img/avatar-m.svg" alt=""><span class="meta">hace 2 días</span></div><p>Nala ya tiene sus vacunas al día 💉 lista para conseguir familia</p><div class="row"><span class="tag green"><svg class="i xs fill"><use href="#i-paw"/></svg> En adopción</span><span class="link small">Ver a Nala</span></div><div class="actions"><span><svg class="i sm"><use href="#i-heart"/></svg> 19</span><span><svg class="i sm"><use href="#i-chat"/></svg> 4</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 18 Reportar -->
+<div class="screen-block">
+    <div class="frame desktop" id="d18" data-label="18 · Reportar contenido">
+    <div class="topbar"><div class="brand"><img class="logo-mark" src="img/logo-mark.png" alt=""><img class="logo-word" src="img/logo-word.png" alt="Pawly"></div><div class="search" style="width:420px;margin-left:24px;"><svg class="i sm"><use href="#i-search"/></svg>Buscar personas, mascotas o publicaciones</div><div class="grow"></div><div class="iconbtn bordered"><svg class="i"><use href="#i-bell"/></svg></div><img class="avatar" src="img/avatar-h.svg" alt=""></div>
+    <div class="body">
+      <div class="sidebar"><div class="item on"><svg class="i"><use href="#i-home"/></svg>Inicio</div><div class="item"><svg class="i"><use href="#i-search"/></svg>Buscar</div><div class="item"><svg class="i fill"><use href="#i-paw"/></svg>Adopción</div><div class="item"><svg class="i"><use href="#i-chat"/></svg>Mensajes</div><div class="item"><svg class="i"><use href="#i-bell"/></svg>Notificaciones</div><div class="item"><svg class="i"><use href="#i-user"/></svg>Mi perfil</div></div>
+      <div class="content"><div class="center"><div class="post" style="padding:18px;gap:12px;"><div class="row"><img class="avatar" src="img/avatar-h.svg" alt=""><div class="col" style="gap:0"><span class="strong">Pedro Ramírez</span><span class="meta">@pramirez · El Hatillo · hace 5 h</span></div></div><p>Vendo cachorros de raza escríbeme al 0412…</p></div></div></div>
+    </div>
+    <div class="overlay"></div>
+    <div class="modal" style="width:520px">
+      <div class="row between"><div class="h2">Reportar publicación</div><div class="iconbtn"><svg class="i"><use href="#i-x"/></svg></div></div>
+      <p class="small muted">Cuéntanos qué está mal. El equipo de Pawly lo revisa y no se le avisa a la persona.</p>
+      <div class="col" style="gap:8px">
+        <div class="row card pad flat" style="padding:12px 14px;border-color:var(--accent);background:var(--accent-soft)"><div class="dot"></div><span class="strong">Venta de animales</span></div>
+        <div class="row card pad flat" style="padding:12px 14px"><div class="dot" style="background:var(--line-2)"></div><span>Spam o publicidad</span></div>
+        <div class="row card pad flat" style="padding:12px 14px"><div class="dot" style="background:var(--line-2)"></div><span>Acoso o lenguaje ofensivo</span></div>
+        <div class="row card pad flat" style="padding:12px 14px"><div class="dot" style="background:var(--line-2)"></div><span>Maltrato animal</span></div>
+        <div class="row card pad flat" style="padding:12px 14px"><div class="dot" style="background:var(--line-2)"></div><span>Otro</span></div>
+      </div>
+      <div class="field"><label>Detalles (opcional)</label><div class="input ta" style="min-height:70px"><span class="ph">Agrega contexto si quieres</span></div></div>
+      <div class="row between"><span class="xs muted">Los reportes son anónimos.</span><div class="row"><span class="btn ghost">Cancelar</span><span class="btn">Enviar reporte</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 19 Ajustes -->
+<div class="screen-block">
+    <div class="frame desktop" id="d19" data-label="19 · Ajustes">
+    <div class="topbar"><div class="brand"><img class="logo-mark" src="img/logo-mark.png" alt=""><img class="logo-word" src="img/logo-word.png" alt="Pawly"></div><div class="search" style="width:420px;margin-left:24px;"><svg class="i sm"><use href="#i-search"/></svg>Buscar personas, mascotas o publicaciones</div><div class="grow"></div><div class="iconbtn bordered"><svg class="i"><use href="#i-bell"/></svg></div><img class="avatar" src="img/avatar-h.svg" alt=""></div>
+    <div class="body">
+      <div class="sidebar"><div class="item"><svg class="i"><use href="#i-home"/></svg>Inicio</div><div class="item"><svg class="i"><use href="#i-search"/></svg>Buscar</div><div class="item"><svg class="i fill"><use href="#i-paw"/></svg>Adopción</div><div class="item"><svg class="i"><use href="#i-chat"/></svg>Mensajes</div><div class="item"><svg class="i"><use href="#i-bell"/></svg>Notificaciones</div><div class="item on"><svg class="i"><use href="#i-user"/></svg>Mi perfil</div></div>
+      <div class="content">
+        <span class="link small row" style="gap:4px"><svg class="i xs"><use href="#i-back"/></svg>Volver a mi perfil</span>
+        <div class="h1">Ajustes</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;max-width:1000px">
+          <div class="card pad" style="padding:20px;display:flex;flex-direction:column;gap:14px">
+            <div class="h3">Cuenta</div>
+            <div class="field"><label>Correo electrónico</label><div class="input"><svg class="i sm muted"><use href="#i-mail"/></svg><span>darvin.hernandez@gmail.com</span></div></div>
+            <div class="field"><label>Contraseña actual</label><div class="input"><svg class="i sm muted"><use href="#i-lock"/></svg><span>••••••••</span></div><span class="hint">Si entraste con tu cédula como contraseña, debes cambiarla aquí antes de seguir.</span></div>
+            <div class="grid2"><div class="field"><label>Nueva contraseña</label><div class="input"><span class="ph">Mínimo 8 caracteres</span></div></div><div class="field"><label>Confirmar</label><div class="input"><span class="ph">Repite la contraseña</span></div></div></div>
+            <div class="row" style="justify-content:flex-end"><span class="btn sm">Guardar contraseña</span></div>
+          </div>
+          <div class="col" style="gap:16px">
+            <div class="card pad" style="padding:20px;display:flex;flex-direction:column;gap:12px">
+              <div class="h3">Notificaciones</div>
+              <div class="row between"><div class="col" style="gap:0"><span class="strong small">En la app</span><span class="xs muted">Chats, comentarios y postulaciones</span></div><div class="toggle on"></div></div>
+              <div class="row between"><div class="col" style="gap:0"><span class="strong small">También por correo</span><span class="xs muted">Te llega un resumen a tu email</span></div><div class="toggle on"></div></div>
+            </div>
+            <div class="card pad" style="padding:20px;display:flex;flex-direction:column;gap:12px">
+              <div class="h3">Apariencia e idioma</div>
+              <div class="row between"><span class="strong small">Idioma</span><div class="seg" style="width:220px"><span class="opt on">Español</span><span class="opt">English</span></div></div>
+              <div class="row between"><span class="strong small">Tema</span><div class="seg" style="width:220px"><span class="opt on">Claro</span><span class="opt">Oscuro</span></div></div>
+            </div>
+            <div class="row"><span class="btn ghost" style="color:var(--red);border-color:var(--red-soft)"><svg class="i sm"><use href="#i-logout"/></svg>Cerrar sesión</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

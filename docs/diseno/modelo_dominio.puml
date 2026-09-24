@@ -1,0 +1,164 @@
+@startuml modelo_dominio
+' Modelo de Dominio (MVP) - Pawly - ATI 2026-1
+' Versión 2 (Reto 11): ajustada al alcance de Adopciones y a los datos que muestran los prototipos
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam linetype polyline
+skinparam ranksep 45
+skinparam nodesep 30
+skinparam packageStyle rectangle
+skinparam package {
+  BackgroundColor #FBFCFE
+  BorderColor #A0AEC0
+  FontColor #4A5568
+  FontStyle bold
+}
+skinparam class {
+  BackgroundColor #F4F8FF
+  BorderColor #2B6CB0
+  ArrowColor #2D3748
+  FontColor #1A202C
+  FontName Segoe UI
+  FontSize 13
+  AttributeFontSize 12
+  AttributeFontColor #2D3748
+}
+skinparam classFontStyle bold
+hide methods
+hide circle
+left to right direction
+
+package "Cuenta y perfiles" {
+  class Usuario {
+    username
+    password
+    email
+    estaVetado : bool
+    requiereCambioClave : bool
+    idioma : {es, en}
+    tema : {claro, oscuro}
+    notificarPorCorreo : bool
+  }
+  class PerfilHumano {
+    nombre
+    foto
+    ci
+    fechaNacimiento : fecha
+    genero
+    descripcion
+    ciudad
+  }
+  class PerfilMascota {
+    nombre
+    especie : {perro, gato}
+    sexo
+    temperamento
+    fechaNacimiento : fecha
+    descripcion
+    foto
+    ubicacion
+    enAdopcion : bool
+    caracteristicasBuscadas
+  }
+}
+
+package "Muro" {
+  class Publicacion {
+    texto
+    fecha : fechaHora
+    bloqueada : bool
+  }
+  class Multimedia {
+    tipo : {foto, video, audio, enlace}
+    url
+  }
+  class Comentario {
+    texto
+    fecha : fechaHora
+    bloqueado : bool
+  }
+  class Seguimiento {
+    fecha : fecha
+  }
+}
+
+package "Adopción y mensajería" {
+  class Postulacion {
+    mensaje
+    estado : {pendiente, aceptada, rechazada, cancelada}
+    fecha : fechaHora
+  }
+  class PeticionChat {
+    estado : {pendiente, aceptada, rechazada}
+    fecha : fechaHora
+  }
+  class Chat {
+    fechaCreacion : fechaHora
+  }
+  class Mensaje {
+    texto
+    fecha : fechaHora
+  }
+  class Notificacion {
+    tipo : {chat, comentario, postulacion, peticion, seguidor, adopcion}
+    fecha : fechaHora
+    leida : bool
+  }
+}
+
+package "Moderación" {
+  class Reporte {
+    objeto : {cuenta, publicacion, comentario}
+    motivo : {venta, spam, acoso, maltrato, otro}
+    detalle
+    estado : {pendiente, resuelto, descartado}
+    fecha : fechaHora
+  }
+  class Administrador {
+    nombre
+    email
+  }
+}
+
+' --- Cuenta y perfiles ---
+Usuario "1" -- "1" PerfilHumano : posee >
+PerfilHumano "1" -- "0..*" PerfilMascota : registra >
+
+' --- Muro ---
+PerfilHumano "1" -- "0..*" Publicacion : publica >
+Publicacion "1" *-- "0..*" Multimedia : adjunta >
+Publicacion "0..*" -- "0..*" PerfilHumano : etiqueta >
+Publicacion "0..*" -- "0..*" PerfilMascota : etiqueta >
+Publicacion "1" -- "0..*" Comentario : recibe >
+PerfilHumano "1" -- "0..*" Comentario : escribe >
+Comentario "0..1" -- "0..*" Comentario : responde a <
+
+' --- Conexiones ---
+PerfilHumano "1" -- "0..*" Seguimiento : sigue >
+Seguimiento "0..*" --> "1" PerfilHumano : seguido
+
+' --- Adopción ---
+PerfilHumano "1" -- "0..*" Postulacion : emite >
+Postulacion "0..*" --> "1" PerfilMascota : para adoptar
+Postulacion "1" -- "1" Chat : abre >
+
+' --- Mensajería ---
+PerfilHumano "1" -- "0..*" PeticionChat : envía >
+PeticionChat "0..*" --> "1" PerfilHumano : destinatario
+PeticionChat "1" -- "0..1" Chat : abre >
+Chat "1" -- "2" PerfilHumano : participan >
+Chat "1" *-- "0..*" Mensaje : agrupa >
+PerfilHumano "1" -- "0..*" Mensaje : envía >
+
+' --- Notificaciones ---
+PerfilHumano "1" -- "0..*" Notificacion : recibe >
+
+' --- Moderación ---
+PerfilHumano "1" -- "0..*" Reporte : emite >
+Administrador "1" -- "0..*" Reporte : revisa >
+Administrador "1" ..> "0..*" Usuario : gestiona / veta
+Administrador "1" ..> "0..*" Publicacion : bloquea
+Administrador "1" ..> "0..*" Comentario : bloquea
+
+@enduml
