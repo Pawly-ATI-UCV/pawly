@@ -5,8 +5,8 @@
 skinparam backgroundColor #FFFFFF
 skinparam shadowing false
 skinparam linetype polyline
-skinparam ranksep 60
-skinparam nodesep 40
+skinparam ranksep 45
+skinparam nodesep 30
 skinparam packageStyle rectangle
 skinparam package {
   BackgroundColor #FBFCFE
@@ -27,6 +27,7 @@ skinparam class {
 skinparam classFontStyle bold
 hide methods
 hide circle
+left to right direction
 
 package "Cuenta y perfiles" {
   class Usuario {
