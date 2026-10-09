@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Pawly · ícono "check". Uso: <svg class="icon"><use href="../static/img/icons/check.svg#icon"/></svg> -->
+  <symbol id="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <use href="#icon"/>
+</svg>
