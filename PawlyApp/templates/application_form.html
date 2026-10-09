@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Postularte para adoptar a Toby · Pawly</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&amp;family=Figtree:wght@400;500;600;700&amp;display=swap">
+  <link rel="stylesheet" href="../../staticfiles/css/pawly.css">
+  <link rel="icon" href="../../staticfiles/img/logo-mark.png">
+  <script src="../../staticfiles/js/pawly.js" defer></script>
+</head>
+<body class="layout-app">
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+
+  <!-- Barra superior (escritorio). Queda detrás de la ventana: inert la saca del teclado -->
+  <header class="app-header" inert>
+    <a class="brand" href="#">
+      <img class="brand__mark" src="../../staticfiles/img/logo-mark.png" alt="">
+      <img class="brand__word" src="../../staticfiles/img/logo-word.png" alt="Pawly, ir a Inicio">
+    </a>
+    <form class="search-box" action="#" role="search" aria-label="Buscar en Pawly">
+      <svg class="icon icon--sm" aria-hidden="true"><use href="../../staticfiles/img/icons/search.svg#icon"/></svg>
+      <label class="visually-hidden" for="global-search">Buscar personas, mascotas o publicaciones</label>
+      <input id="global-search" name="q" type="search" placeholder="Buscar personas, mascotas o publicaciones">
+    </form>
+    <div class="app-header__end">
+      <a class="icon-btn icon-btn--bordered" href="#" aria-label="Notificaciones, 3 sin leer">
+        <svg class="icon" aria-hidden="true"><use href="../../staticfiles/img/icons/bell.svg#icon"/></svg>
+        <span class="badge" aria-hidden="true">3</span>
+      </a>
+      <a href="#"><img class="avatar avatar--sm" src="../../media/avatars/avatar-h.svg" alt="Mi perfil"></a>
+    </div>
+  </header>
+
+  <!-- Menú principal (detrás de la ventana) -->
+  <nav class="app-nav" aria-label="Principal" inert>
+    <ul class="app-nav__list">
+      <li><a class="app-nav__item" href="#"><span class="app-nav__icon"><svg class="icon" aria-hidden="true"><use href="../../staticfiles/img/icons/home.svg#icon"/></svg></span>Inicio</a></li>
+      <li><a class="app-nav__item" href="#"><span class="app-nav__icon"><svg class="icon" aria-hidden="true"><use href="../../staticfiles/img/icons/search.svg#icon"/></svg></span>Buscar</a></li>
+      <li><a class="app-nav__item app-nav__item--featured" href="adoption_feed.html" aria-current="page"><span class="app-nav__icon"><svg class="icon icon--fill" aria-hidden="true"><use href="../../staticfiles/img/icons/paw.svg#icon"/></svg></span>Adopción</a></li>
+      <li><a class="app-nav__item" href="#"><span class="app-nav__icon"><svg class="icon" aria-hidden="true"><use href="../../staticfiles/img/icons/chat.svg#icon"/></svg></span>Mensajes<span class="badge">2<span class="visually-hidden"> sin leer</span></span></a></li>
+      <li class="app-nav__desktop"><a class="app-nav__item" href="#"><span class="app-nav__icon"><svg class="icon" aria-hidden="true"><use href="../../staticfiles/img/icons/bell.svg#icon"/></svg></span>Notificaciones<span class="badge">3<span class="visually-hidden"> sin leer</span></span></a></li>
+      <li><a class="app-nav__item" href="#"><span class="app-nav__icon"><svg class="icon" aria-hidden="true"><use href="../../staticfiles/img/icons/user.svg#icon"/></svg></span><span class="app-nav__short">Perfil</span><span class="app-nav__long">Mi perfil</span></a></li>
+    </ul>
+  </nav>
+
+  <main id="main" class="app-main">
+    <!-- La ficha de Toby queda de fondo, oscurecida -->
+    <div class="overlay-context" inert>
+      <div class="pet-layout">
+        <div class="pet-hero">
+          <img class="pet-hero__photo" src="../../media/pets/d1.jpg" alt="">
+        </div>
+        <div class="pet-info">
+          <p class="title-1">Toby</p>
+          <p class="text-small text-muted">Chacao, Caracas · a 2 km de ti</p>
+        </div>
+      </div>
+    </div>
+    <div class="overlay-backdrop"></div>
+
+    <section class="sheet" aria-labelledby="application-title">
+      <div class="sheet__handle"></div>
+      <div class="sheet__head">
+        <h1 class="title-2" id="application-title">Postularte para adoptar a Toby</h1>
+        <a class="icon-btn" href="#" aria-label="Cerrar y volver a la ficha de Toby">
+          <svg class="icon" aria-hidden="true"><use href="../../staticfiles/img/icons/close.svg#icon"/></svg>
+        </a>
+      </div>
+
+      <div class="mini-row card card--flat card--pad">
+        <img class="mini-row__photo" src="../../media/pets/d1.jpg" alt="">
+        <div class="grow">
+          <p class="text-strong text-small">Toby · Mestizo · 2 años</p>
+          <p class="text-xs text-muted">Publicado por Luis García</p>
+        </div>
+      </div>
+
+      <p class="text-small text-muted">Se abrirá un chat con Luis García para que coordinen la visita. Cuéntale por qué quieres adoptar a Toby.</p>
+
+      <form class="form-stack" data-validate data-next="#" novalidate>
+        <div class="field">
+          <label class="field__label" for="application-message">Mensaje para Luis</label>
+          <textarea class="input" id="application-message" name="message" required
+            data-error="Escribe un mensaje para el dueño" aria-describedby="application-message-error">Hola Luis, vivo en Ocumare del Tuy tengo patio y salgo a caminar todas las mañanas, me encantaría conocer a Toby este fin de semana</textarea>
+          <p class="field__error" id="application-message-error" data-error-for="application-message" role="alert" hidden></p>
+        </div>
+
+        <fieldset>
+          <legend class="visually-hidden">Opciones rápidas sobre tu hogar</legend>
+          <div class="chip-group">
+            <label class="chip"><input type="checkbox" name="options" value="yard" checked><span><svg class="icon icon--xs chip__check" aria-hidden="true"><use href="../../staticfiles/img/icons/check.svg#icon"/></svg>Tengo patio</span></label>
+            <label class="chip"><input type="checkbox" name="options" value="no-pets" checked><span><svg class="icon icon--xs chip__check" aria-hidden="true"><use href="../../staticfiles/img/icons/check.svg#icon"/></svg>Sin otras mascotas</span></label>
+            <label class="chip"><input type="checkbox" name="options" value="kids"><span><svg class="icon icon--xs chip__check" aria-hidden="true"><use href="../../staticfiles/img/icons/check.svg#icon"/></svg>Tengo niños</span></label>
+            <label class="chip"><input type="checkbox" name="options" value="apartment"><span><svg class="icon icon--xs chip__check" aria-hidden="true"><use href="../../staticfiles/img/icons/check.svg#icon"/></svg>Vivo en apartamento</span></label>
+          </div>
+        </fieldset>
+
+        <div class="sheet__footer">
+          <p class="sheet__note">Puedes cancelar la postulación desde el chat.</p>
+          <div class="sheet__actions">
+            <a class="btn btn--secondary" href="#">Cancelar</a>
+            <button class="btn btn--primary" type="submit">Enviar postulación</button>
+          </div>
+        </div>
+      </form>
+    </section>
+  </main>
+</body>
+</html>
