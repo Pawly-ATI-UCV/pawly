@@ -6,6 +6,9 @@ from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy
 
+from PawlyApp.forms import ProfileForm
+from PawlyApp.models import Profile
+
 from .forms import RegisterForm
 from .models import AuditLog
 from .signals import get_ip
@@ -51,8 +54,13 @@ def logout_view(request):
 
 @login_required
 def profile_form(request):
-    # Paso 2 del registro
-    return render(request, 'profile_form.html', {'title': _('Tu perfil · Paso 2 de 2')})
+    # Paso 2 del registro, también sirve para editar el perfil
+    profile = Profile.objects.filter(user=request.user).first() or Profile(user=request.user)
+    form = ProfileForm(request.POST or None, request.FILES or None, instance=profile)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        return redirect('home')
+    return render(request, 'profile_form.html', {'title': _('Tu perfil · Paso 2 de 2'), 'form': form})
 
 
 def password_reset(request):

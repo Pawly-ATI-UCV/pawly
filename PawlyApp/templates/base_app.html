@@ -20,7 +20,7 @@
         <svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/bell.svg' %}#icon"/></svg>
         <span class="badge" aria-hidden="true">3</span>
       </a>
-      <a href="{% url 'my_profile' %}"><img class="avatar avatar--sm" src="{{ MEDIA_URL }}avatars/avatar-h.svg" alt="{% trans 'Mi perfil' %}"></a>
+      <a href="{% url 'my_profile' %}"><img class="avatar avatar--sm" src="{{ user.avatar_url }}" alt="{% trans 'Mi perfil' %}"></a>
     </div>
   </header>
 
