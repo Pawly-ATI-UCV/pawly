@@ -15,7 +15,6 @@ urlpatterns = [
     path('my-pets/<int:pet_id>/', views.pet_profile, name='pet_profile'),
     path('my-pets/<int:pet_id>/edit/', views.pet_edit, name='pet_edit'),
     path('users/<int:user_id>/', views.user_profile, name='user_profile'),
-    path('posts/', views.post_list, name='post_list'),
     path('posts/new/', views.post_create, name='post_create'),
     path('posts/<int:post_id>/', views.post_detail, name='post_detail'),
     path('posts/<int:post_id>/report/', views.report, name='report'),

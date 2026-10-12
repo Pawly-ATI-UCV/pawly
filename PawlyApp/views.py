@@ -2,10 +2,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.translation import gettext as _
-
-from .models import Post
 
 
 # Datos de ejemplo mientras se hacen los modelos
@@ -223,10 +220,3 @@ def report(request, post_id):
 def admin_panel(request):
     context = {'title': _('Panel de administración')}
     return render(request, 'admin_panel.html', context)
-
-
-def post_list(request):
-    # Filtramos solo los posts publicados y los ordenamos por fecha de publicación descendente
-    posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
-    # Pasamos los posts al archivo HTML mediante el contexto
-    return render(request, 'post_list.html', {'posts': posts})
