@@ -13,6 +13,19 @@ class User(AbstractUser):
             ('moderate_content', 'Can block posts and comments'),
         ]
 
+    # Nombre del perfil o el usuario si aún no tiene perfil
+    def display_name(self):
+        profile = getattr(self, 'profile', None)
+        if profile and profile.full_name:
+            return profile.full_name
+        return self.username
+
+    def avatar_url(self):
+        profile = getattr(self, 'profile', None)
+        if profile and profile.photo:
+            return profile.photo.url
+        return settings.MEDIA_URL + 'avatars/avatar-h.svg'
+
 
 class AuditLog(models.Model):
     # Registro de las acciones del módulo de ingreso
