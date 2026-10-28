@@ -138,6 +138,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'staticfiles']
 
+# Carpeta donde collectstatic junta los archivos que sirve Apache
+STATIC_ROOT = BASE_DIR / 'static_root'
+
 # Fotos que suben los usuarios
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

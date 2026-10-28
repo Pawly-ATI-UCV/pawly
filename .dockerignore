@@ -2,3 +2,6 @@
 .git/
 __pycache__/
 *.pyc
+data/
+db.sqlite3
+static_root/

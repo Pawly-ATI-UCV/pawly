@@ -37,10 +37,11 @@ pawly/
 
 ```bash
 docker compose up -d --build
-docker compose exec web python manage.py migrate
 ```
 
-La aplicación queda disponible en http://localhost:8000
+Las migraciones se aplican solas al arrancar. La aplicación queda disponible en
+http://localhost:8000, servida por Apache con mod_wsgi (configuración en `apache/pawly.conf`).
+Después de cambiar el código hay que volver a correr `docker compose up -d --build`.
 
 Para detener los contenedores:
 
@@ -48,8 +49,8 @@ Para detener los contenedores:
 docker compose down
 ```
 
-El volumen `bd_data` se conserva entre ejecuciones, por lo que la base de datos no
-se pierde al apagar los contenedores.
+Los volúmenes `bd_data` (base de datos) y `media_data` (fotos) se conservan entre ejecuciones,
+por lo que no se pierden al apagar los contenedores.
 
 ## Cómo trabajar sin Docker (desarrollo local)
 
@@ -70,7 +71,7 @@ contenedores:
 
 | Contenedor | Imagen | Rol |
 |---|---|---|
-| `pawly_web` | construida desde el `Dockerfile` | Servidor de aplicación (Django) |
+| `pawly_web` | construida desde el `Dockerfile` | Servidor de aplicación: Apache con mod_wsgi y Django |
 | `pawly_db` | `alpine:3.21` | Servidor de base de datos: administra el volumen `bd_data` |
 
 Ambos comparten el volumen `bd_data`, donde reside el archivo `db.sqlite3`. El
