@@ -1,0 +1,13 @@
+{% load i18n %}
+<!-- Cambio de idioma en las pantallas de acceso -->
+<form class="lang-switch" action="{% url 'set_language' %}" method="post" data-autosubmit>
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ request.get_full_path }}">
+  <fieldset>
+    <legend class="visually-hidden">{% trans "Idioma" %}</legend>
+    <div class="segmented">
+      <input type="radio" id="access-lang-es" name="language" value="es"{% if LANGUAGE_CODE == 'es' %} checked{% endif %}><label for="access-lang-es">Español</label>
+      <input type="radio" id="access-lang-en" name="language" value="en" lang="en"{% if LANGUAGE_CODE == 'en' %} checked{% endif %}><label for="access-lang-en" lang="en">English</label>
+    </div>
+  </fieldset>
+</form>
