@@ -34,11 +34,11 @@
         {% csrf_token %}
         <div class="profile-form">
           <div class="avatar-upload">
-            <img class="avatar avatar--xl" src="{{ user.avatar_url }}" alt="{% trans 'Tu foto de perfil' %}">
+            <img class="avatar avatar--xl" id="profile-photo-preview" src="{{ user.avatar_url }}" alt="{% trans 'Tu foto de perfil' %}">
             <label class="btn btn--primary btn--icon btn--sm avatar-upload__button">
               <svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/camera.svg' %}#icon"/></svg>
               <span class="visually-hidden">{% trans "Subir foto" %}</span>
-              <input type="file" name="photo" accept="image/png, image/jpeg">
+              <input type="file" name="photo" accept="image/png, image/jpeg" data-preview="profile-photo-preview">
             </label>
           </div>
 

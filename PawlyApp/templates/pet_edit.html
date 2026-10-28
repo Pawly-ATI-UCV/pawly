@@ -21,10 +21,10 @@
 
       <div class="page-content edit-grid">
         <section class="card card--pad photo-card" aria-label="{% trans 'Foto de la mascota' %}">
-          <img class="photo-card__img" src="{{ pet.photo_url }}" alt="{% trans 'Foto actual de la mascota' %}">
+          <img class="photo-card__img" id="pet-photo-preview" src="{{ pet.photo_url }}" alt="{% trans 'Foto actual de la mascota' %}">
           <label class="btn btn--secondary btn--sm btn--block">
             <svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/camera.svg' %}#icon"/></svg>{% trans "Cambiar foto" %}
-            <input class="visually-hidden" type="file" name="photo" accept="image/png, image/jpeg">
+            <input class="visually-hidden" type="file" name="photo" accept="image/png, image/jpeg" data-preview="pet-photo-preview">
           </label>
           <p class="field__hint">{% trans "JPG o PNG, máximo 5 MB." %}</p>
         </section>

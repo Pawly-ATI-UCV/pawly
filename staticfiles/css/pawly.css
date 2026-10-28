@@ -803,6 +803,11 @@ table { border-collapse: collapse; }
 /* Formularios de un solo botón dentro de una fila */
 .inline-form { display: contents; }
 
+/* Selector de idioma en las pantallas de acceso */
+.lang-switch { position: fixed; right: 16px; bottom: 16px; z-index: 20; }
+.lang-switch fieldset { margin: 0; padding: 0; border: 0; }
+.lang-switch .segmented label { padding: 4px 12px; font-size: 12px; }
+
 
 /* Botón Publicar del menú lateral */
 .app-nav__publish { margin-top: 12px; justify-content: center; }

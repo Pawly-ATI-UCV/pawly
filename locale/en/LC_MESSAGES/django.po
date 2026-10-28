@@ -1868,3 +1868,143 @@ msgid "%(count)d año"
 msgid_plural "%(count)d años"
 msgstr[0] "%(count)d year"
 msgstr[1] "%(count)d years"
+
+msgid "0 con más de 48 h"
+msgstr "0 older than 48 h"
+
+msgid "No hay reportes pendientes"
+msgstr "There are no pending reports"
+
+msgid "+%(new_users)s este mes"
+msgstr "+%(new_users)s this month"
+
+msgid "+%(new_pets)s este mes"
+msgstr "+%(new_pets)s this month"
+
+msgid "%(applications_month)s postulaciones este mes"
+msgstr "%(applications_month)s applications this month"
+
+msgid "Notificaciones, %(new_notifications)s sin leer"
+msgstr "Notifications, %(new_notifications)s unread"
+
+msgid "Mensajes, %(unread_messages)s sin leer"
+msgstr "Messages, %(unread_messages)s unread"
+
+msgid "¿Cancelar tu postulación para adoptar a %(name)s? Le avisaremos a %(owner)s."
+msgstr "Cancel your application to adopt %(name)s? We'll let %(owner)s know."
+
+msgid "Ver perfil de %(name)s"
+msgstr "See %(name)s's profile"
+
+msgid ". Le avisamos a %(owner)s."
+msgstr ". We let %(owner)s know."
+
+msgid "a %(name)s"
+msgstr "%(name)s"
+
+msgid "Gracias, el equipo de Pawly revisará tu reporte."
+msgstr "Thanks, the Pawly team will review your report."
+
+msgid "Todavía no hay publicaciones. ¡Sé el primero en publicar!"
+msgstr "There are no posts yet. Be the first to post!"
+
+msgid "No hay mascotas en adopción por ahora"
+msgstr "There are no pets up for adoption right now"
+
+msgid "Ya sigues a todas las personas de Pawly"
+msgstr "You already follow everyone on Pawly"
+
+msgid "Publicaciones · %(total)s"
+msgstr "Posts · %(total)s"
+
+msgid "Antes"
+msgstr "Earlier"
+
+msgid "No tienes notificaciones por ahora"
+msgstr "You don't have any notifications right now"
+
+msgid "<strong>%(name)s</strong> se postuló para adoptar a <strong>%(pet)s</strong>."
+msgstr "<strong>%(name)s</strong> applied to adopt <strong>%(pet)s</strong>."
+
+msgid "<strong>%(name)s</strong> te envió un mensaje."
+msgstr "<strong>%(name)s</strong> sent you a message."
+
+msgid "Más opciones de la publicación de %(name)s"
+msgstr "More options for %(name)s's post"
+
+msgid "Escribe algo antes de publicar"
+msgstr "Write something before posting"
+
+msgid "0 me gusta"
+msgstr "0 likes"
+
+msgid "0 comentarios"
+msgstr "0 comments"
+
+msgid "Todavía no hay comentarios"
+msgstr "There are no comments yet"
+
+msgid "Escribe un correo válido, por ejemplo nombre@gmail.com"
+msgstr "Enter a valid email, for example name@gmail.com"
+
+msgid "Agrega contexto si quieres"
+msgstr "Add some context if you want"
+
+msgid "No encontramos personas con ese nombre"
+msgstr "We couldn't find people with that name"
+
+msgid "No encontramos mascotas con ese nombre"
+msgstr "We couldn't find pets with that name"
+
+msgid "No encontramos publicaciones con ese texto"
+msgstr "We couldn't find posts with that text"
+
+msgid "Escribe el nombre de una persona, una mascota o una ciudad en el buscador."
+msgstr "Type the name of a person, a pet or a city in the search box."
+
+msgid "Resultados para \"%(query)s\""
+msgstr "Results for \"%(query)s\""
+
+msgid "%(users)s personas · %(pets)s mascotas · %(posts)s publicaciones"
+msgstr "%(users)s people · %(pets)s pets · %(posts)s posts"
+
+msgid "Ver las %(total)s"
+msgstr "See all %(total)s"
+
+msgid "%(species)s · de %(owner)s"
+msgstr "%(species)s · %(owner)s's"
+
+msgid "Todavía no tiene mascotas registradas"
+msgstr "They don't have any pets yet"
+
+msgid "Todavía no tiene publicaciones"
+msgstr "They don't have any posts yet"
+
+msgid "Reportar la cuenta de %(name)s"
+msgstr "Report %(name)s's account"
+
+msgid "Publicaciones de %(name)s"
+msgstr "%(name)s's posts"
+
+msgid "Publicación de %(name)s"
+msgstr "%(name)s's post"
+
+msgid "ahora"
+msgstr "now"
+
+msgid "hace %(count)d min"
+msgstr "%(count)d min ago"
+
+msgid "hace %(count)d h"
+msgstr "%(count)d h ago"
+
+msgid "ayer"
+msgstr "yesterday"
+
+msgid "hace %(count)d días"
+msgstr "%(count)d days ago"
+
+msgid "· %(total)s adopción lograda"
+msgid_plural "· %(total)s adopciones logradas"
+msgstr[0] "· %(total)s successful adoption"
+msgstr[1] "· %(total)s successful adoptions"

@@ -45,7 +45,7 @@
             <label class="field__label" for="register-email">{% trans "Correo electrónico" %}</label>
             <input class="input" id="register-email" name="email" type="email" autocomplete="email" placeholder="laura.barreto@gmail.com"
               value="{{ form.email.value|default_if_none:'' }}"
-              required data-error="{% trans 'Escribe tu correo electrónico' %}" aria-describedby="register-email-error">
+              required data-error="{% trans 'Escribe tu correo electrónico' %}" data-error-email="{% trans 'Escribe un correo válido, por ejemplo nombre@gmail.com' %}" aria-describedby="register-email-error">
             <p class="field__error" id="register-email-error" data-error-for="register-email" role="alert"{% if not form.email.errors %} hidden{% endif %}>{{ form.email.errors|join:" " }}</p>
           </div>
         </div>
@@ -80,4 +80,8 @@
       <p class="text-small text-muted text-center mobile-only">{% trans "¿Ya tienes cuenta?" %} <a class="link" href="{% url 'login' %}">{% trans "Inicia sesión" %}</a></p>
     </div>
   </main>
+{% endblock %}
+
+{% block footer %}
+  {% include "language_switch.html" %}
 {% endblock %}

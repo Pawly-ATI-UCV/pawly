@@ -14,11 +14,19 @@
     }
   }
 
+  // Correo con @ y un dominio con punto, por ejemplo nombre@gmail.com
+  function isBadEmail(field) {
+    const value = field.value.trim();
+    return field.type === 'email' && value !== '' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  }
+
   function validate(form) {
     let firstInvalid = null;
-    form.querySelectorAll('[required]').forEach(function (field) {
+    form.querySelectorAll('[required], input[type="email"]').forEach(function (field) {
       const inUse = !field.disabled && !field.closest('[hidden]');
-      const message = inUse && isEmpty(field) ? field.dataset.error : '';
+      let message = '';
+      if (inUse && field.required && isEmpty(field)) message = field.dataset.error;
+      else if (inUse && isBadEmail(field)) message = field.dataset.errorEmail || field.dataset.error;
       setError(form, field, message);
       if (message && !firstInvalid) firstInvalid = field;
     });
@@ -130,4 +138,33 @@
   document.querySelectorAll('[data-hide-when]').forEach(function (el) {
     el.hidden = matches(el.dataset.hideWhen);
   });
+
+  // Muestra la foto elegida antes de guardar
+  document.querySelectorAll('input[type="file"][data-preview]').forEach(function (input) {
+    input.addEventListener('change', function () {
+      const img = document.getElementById(input.dataset.preview);
+      if (!img || !input.files[0]) return;
+      img.src = URL.createObjectURL(input.files[0]);
+      const box = img.closest('[hidden]');
+      if (box) box.hidden = false;
+    });
+  });
+
+  // El chat busca mensajes nuevos cada 5 segundos
+  const chatMessages = document.querySelector('[data-refresh]');
+  if (chatMessages) {
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    setInterval(function () {
+      fetch(window.location.href)
+        .then(function (response) { return response.text(); })
+        .then(function (html) {
+          const page = new DOMParser().parseFromString(html, 'text/html');
+          const fresh = page.querySelector('[data-refresh]');
+          if (fresh && fresh.innerHTML !== chatMessages.innerHTML) {
+            chatMessages.innerHTML = fresh.innerHTML;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+          }
+        });
+    }, 5000);
+  }
 })();
