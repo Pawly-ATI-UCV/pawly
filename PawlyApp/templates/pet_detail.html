@@ -70,8 +70,11 @@
           <img class="avatar avatar--lg" src="{{ pet.owner.avatar_url }}" alt="">
           <div class="grow">
             <p class="text-strong">{{ pet.owner.display_name }}</p>
-            <p class="text-small text-muted">{% trans "Publicado el" %} <time datetime="{{ pet.created_at|date:'Y-m-d' }}">{{ pet.created_at|date:'j b Y' }}</time></p>
+            <p class="text-small text-muted">{% trans "Publicado el" %} <time datetime="{{ pet.created_at|date:'Y-m-d' }}">{{ pet.created_at|date:'j b Y' }}</time> {% blocktrans count total=owner_adoptions %}· {{ total }} adopción lograda{% plural %}· {{ total }} adopciones logradas{% endblocktrans %}</p>
           </div>
+          {% if pet.owner != user %}
+          <a class="btn btn--secondary btn--sm" href="{% url 'user_profile' pet.owner.id %}" aria-label="{% blocktrans with owner=pet.owner.display_name %}Ver perfil de {{ owner }}{% endblocktrans %}">{% trans "Ver perfil" %}</a>
+          {% endif %}
         </div>
 
         <div class="cta-bar">

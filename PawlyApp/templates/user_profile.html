@@ -4,79 +4,67 @@
 {% block content %}
     <div class="page-bar mobile-only">
       <a class="icon-btn" href="{% url 'search' %}" aria-label="{% trans 'Volver a Buscar' %}"><svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/back.svg' %}#icon"/></svg></a>
-      <p class="page-bar__title">Laura Barreto</p>
+      <p class="page-bar__title">{{ account.display_name }}</p>
       <div class="page-bar__end">
-        <a class="icon-btn" href="{% url 'report' 1 %}" aria-label="{% trans 'Reportar la cuenta de Laura Barreto' %}"><svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/flag.svg' %}#icon"/></svg></a>
+        <a class="icon-btn" href="{% url 'report_account' account.id %}" aria-label="{% blocktrans with name=account.display_name %}Reportar la cuenta de {{ name }}{% endblocktrans %}"><svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/flag.svg' %}#icon"/></svg></a>
       </div>
     </div>
 
     <div class="profile-layout">
       <section class="profile" aria-labelledby="profile-name">
+        <p class="notice notice--success" role="status" data-show-when="reporte=enviado" hidden><svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/check.svg' %}#icon"/></svg>{% trans "Gracias, el equipo de Pawly revisará tu reporte." %}</p>
         <div class="profile__head">
-          <img class="avatar avatar--xl avatar--profile" src="{{ MEDIA_URL }}avatars/avatar-m.svg" alt="Foto de perfil de Laura Barreto">
+          <img class="avatar avatar--xl avatar--profile" src="{{ account.avatar_url }}" alt="{% blocktrans with name=account.display_name %}Foto de perfil de {{ name }}{% endblocktrans %}">
           <div class="stack stack--sm">
-            <h1 class="profile__name" id="profile-name">Laura Barreto</h1>
-            <p class="profile__meta">@laurabarreto · Los Teques, Miranda</p>
+            <h1 class="profile__name" id="profile-name">{{ account.display_name }}</h1>
+            <p class="profile__meta">@{{ account.username }}{% if account.profile.city %} · {{ account.profile.city }}{% endif %}</p>
           </div>
         </div>
-        <p class="text-small">Amante de los gatos, tengo dos y quiero adoptar un tercero 🐱</p>
+        <p class="text-small">{{ account.profile.about }}</p>
         <ul class="profile__stats">
-          <li><strong>54</strong> <span>{% trans "Seguidores" %}</span></li>
-          <li><strong>80</strong> <span>{% trans "Siguiendo" %}</span></li>
-          <li><strong>2</strong> <span>{% trans "Mascotas" %}</span></li>
+          <li><strong>0</strong> <span>{% trans "Seguidores" %}</span></li>
+          <li><strong>0</strong> <span>{% trans "Siguiendo" %}</span></li>
+          <li><strong>{{ pets|length }}</strong> <span>{% trans "Mascotas" %}</span></li>
         </ul>
         <div class="profile__actions">
-          <button class="btn btn--primary btn--sm btn--follow" type="button" aria-pressed="false"><svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/heart.svg' %}#icon"/></svg><span class="when-off">{% trans "Seguir" %}</span><span class="when-on">{% trans "Siguiendo" %}</span><span class="visually-hidden"> {% trans "a Laura Barreto" %}</span></button>
+          <button class="btn btn--primary btn--sm btn--follow" type="button" aria-pressed="false"><svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/heart.svg' %}#icon"/></svg><span class="when-off">{% trans "Seguir" %}</span><span class="when-on">{% trans "Siguiendo" %}</span><span class="visually-hidden"> {% blocktrans with name=account.display_name %}a {{ name }}{% endblocktrans %}</span></button>
           <a class="btn btn--secondary btn--sm" href="{% url 'chat_list' %}"><svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/chat.svg' %}#icon"/></svg>{% trans "Petición de chat" %}</a>
         </div>
-        <a class="link text-small row desktop-only--inline" href="{% url 'report' 1 %}"><svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/flag.svg' %}#icon"/></svg>{% trans "Reportar cuenta" %}</a>
+        <a class="link text-small row desktop-only--inline" href="{% url 'report_account' account.id %}"><svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/flag.svg' %}#icon"/></svg>{% trans "Reportar cuenta" %}</a>
       </section>
 
       <div class="stack stack--lg">
-        <section class="profile-section" aria-labelledby="her-pets-title">
+        <section class="profile-section" aria-labelledby="their-pets-title">
           <div class="section-head">
-            <h2 class="title-2" id="her-pets-title">{% trans "Sus mascotas" %}</h2>
-            <span class="text-small text-muted mobile-only">2</span>
+            <h2 class="title-2" id="their-pets-title">{% trans "Sus mascotas" %}</h2>
+            <span class="text-small text-muted mobile-only">{{ pets|length }}</span>
           </div>
           <ul class="pet-row">
+            {% for pet in pets %}
             <li class="pet-card card">
-              <img class="pet-card__photo" src="{{ MEDIA_URL }}pets/c1.jpg" alt="Nala, gata atigrada gris, mirando a la cámara">
-              <span class="tag tag--green pet-card__tag">{% trans "En adopción" %}</span>
+              <img class="pet-card__photo" src="{{ pet.photo_url }}" alt="{% blocktrans with name=pet.name %}Foto de {{ name }}{% endblocktrans %}">
+              {% if pet.for_adoption %}<span class="tag tag--green pet-card__tag">{% trans "En adopción" %}</span>{% endif %}
               <div class="pet-card__body">
-                <h3 class="pet-card__name"><a class="pet-card__link" href="{% url 'pet_detail' 1 %}">Nala</a></h3>
-                <p class="pet-card__meta">Gata · 1 año · Hembra</p>
+                <h3 class="pet-card__name">{% if pet.for_adoption %}<a class="pet-card__link" href="{% url 'pet_detail' pet.id %}">{{ pet.name }}</a>{% else %}{{ pet.name }}{% endif %}</h3>
+                <p class="pet-card__meta">{{ pet.get_species_display }} · {{ pet.age }} · {{ pet.get_sex_display }}</p>
               </div>
             </li>
-            <li class="pet-card card">
-              <img class="pet-card__photo" src="{{ MEDIA_URL }}pets/c2.jpg" alt="Tigre, gato atigrado, asomado en un túnel de tela">
-              <div class="pet-card__body">
-                <h3 class="pet-card__name"><a class="pet-card__link" href="{% url 'pet_detail' 1 %}">Tigre</a></h3>
-                <p class="pet-card__meta">Gato · 4 años · Macho</p>
-              </div>
-            </li>
+            {% empty %}
+            <li class="text-small text-muted">{% trans "Todavía no tiene mascotas registradas" %}</li>
+            {% endfor %}
           </ul>
         </section>
 
         <nav class="tabs" aria-label="{% trans 'Contenido del perfil' %}">
-          <a class="tabs__link" href="#posts" aria-current="true">{% trans "Publicaciones · 12" %}</a>
+          <a class="tabs__link" href="#posts" aria-current="true">{% blocktrans with total=posts|length %}Publicaciones · {{ total }}{% endblocktrans %}</a>
         </nav>
 
-        <section class="profile-section" id="posts" aria-label="{% trans 'Publicaciones de Laura Barreto' %}">
-          <article class="post card">
-            <header class="post__head">
-              <img class="avatar avatar--sm" src="{{ MEDIA_URL }}avatars/avatar-m.svg" alt="">
-              <p class="post__meta"><time datetime="2026-10-06">{% trans "hace 2 días" %}</time></p>
-            </header>
-            <p class="post__text">Nala ya tiene sus vacunas al día 💉 lista para conseguir familia</p>
-            <div class="row">
-              <span class="tag tag--green"><svg class="icon icon--xs icon--fill" aria-hidden="true"><use href="{% static 'img/icons/paw.svg' %}#icon"/></svg>{% trans "En adopción" %}</span>
-              <a class="link text-small" href="{% url 'pet_detail' 1 %}">{% trans "Ver a Nala" %}</a>
-            </div>
-            <footer class="post__actions">
-              <button class="like-btn" type="button" aria-pressed="false"><svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/heart.svg' %}#icon"/></svg>19 <span class="visually-hidden">{% trans "me gusta" %}</span></button>
-              <a class="post__action" href="{% url 'post_detail' 1 %}"><svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/chat.svg' %}#icon"/></svg>4 <span class="visually-hidden">{% trans "comentarios" %}</span></a>
-            </footer>
-          </article>
+        <section class="profile-section" id="posts" aria-label="{% blocktrans with name=account.display_name %}Publicaciones de {{ name }}{% endblocktrans %}">
+          {% for post in posts %}
+            {% include "post_card.html" with compact=True %}
+          {% empty %}
+          <p class="text-small text-muted">{% trans "Todavía no tiene publicaciones" %}</p>
+          {% endfor %}
         </section>
       </div>
     </div>

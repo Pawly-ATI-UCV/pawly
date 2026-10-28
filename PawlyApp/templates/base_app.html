@@ -16,9 +16,13 @@
       <input id="global-search" name="q" type="search" placeholder="{% trans 'Buscar personas, mascotas o publicaciones' %}"{% if query %} value="{{ query }}"{% endif %}>
     </form>
     <div class="app-header__end">
-      <a class="icon-btn icon-btn--bordered" href="{% url 'notifications' %}" aria-label="{% trans 'Notificaciones, 3 sin leer' %}">
+      <a class="icon-btn icon-btn--bordered" href="{% url 'notifications' %}" aria-label="{% if new_notifications %}{% blocktrans %}Notificaciones, {{ new_notifications }} sin leer{% endblocktrans %}{% else %}{% trans 'Notificaciones' %}{% endif %}">
         <svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/bell.svg' %}#icon"/></svg>
-        <span class="badge" aria-hidden="true">3</span>
+        {% if new_notifications %}<span class="badge" aria-hidden="true">{{ new_notifications }}</span>{% endif %}
+      </a>
+      <a class="icon-btn icon-btn--bordered desktop-only--flex" href="{% url 'chat_list' %}" aria-label="{% if unread_messages %}{% blocktrans %}Mensajes, {{ unread_messages }} sin leer{% endblocktrans %}{% else %}{% trans 'Mensajes' %}{% endif %}">
+        <svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/chat.svg' %}#icon"/></svg>
+        {% if unread_messages %}<span class="badge" aria-hidden="true">{{ unread_messages }}</span>{% endif %}
       </a>
       <a href="{% url 'my_profile' %}"><img class="avatar avatar--sm" src="{{ user.avatar_url }}" alt="{% trans 'Mi perfil' %}"></a>
     </div>
@@ -30,10 +34,14 @@
       <li><a class="app-nav__item" href="{% url 'home' %}"{% if section == 'home' %} aria-current="page"{% endif %}><span class="app-nav__icon"><svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/home.svg' %}#icon"/></svg></span>{% trans "Inicio" %}</a></li>
       <li><a class="app-nav__item" href="{% url 'search' %}"{% if section == 'search' %} aria-current="page"{% endif %}><span class="app-nav__icon"><svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/search.svg' %}#icon"/></svg></span>{% trans "Buscar" %}</a></li>
       <li><a class="app-nav__item app-nav__item--featured" href="{% url 'adoption_feed' %}"{% if section == 'adoption' %} aria-current="page"{% endif %}><span class="app-nav__icon"><svg class="icon icon--fill" aria-hidden="true"><use href="{% static 'img/icons/paw.svg' %}#icon"/></svg></span>{% trans "Adopción" %}</a></li>
-      <li><a class="app-nav__item" href="{% url 'chat_list' %}"{% if section == 'messages' %} aria-current="page"{% endif %}><span class="app-nav__icon"><svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/chat.svg' %}#icon"/></svg></span>{% trans "Mensajes" %}<span class="badge">2<span class="visually-hidden"> {% trans "sin leer" %}</span></span></a></li>
-      <li class="app-nav__desktop"><a class="app-nav__item" href="{% url 'notifications' %}"{% if section == 'notifications' %} aria-current="page"{% endif %}><span class="app-nav__icon"><svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/bell.svg' %}#icon"/></svg></span>{% trans "Notificaciones" %}<span class="badge">3<span class="visually-hidden"> {% trans "sin leer" %}</span></span></a></li>
+      <li><a class="app-nav__item" href="{% url 'chat_list' %}"{% if section == 'messages' %} aria-current="page"{% endif %}><span class="app-nav__icon"><svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/chat.svg' %}#icon"/></svg></span>{% trans "Mensajes" %}{% if unread_messages %}<span class="badge">{{ unread_messages }}<span class="visually-hidden"> {% trans "sin leer" %}</span></span>{% endif %}</a></li>
+      <li class="app-nav__desktop"><a class="app-nav__item" href="{% url 'notifications' %}"{% if section == 'notifications' %} aria-current="page"{% endif %}><span class="app-nav__icon"><svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/bell.svg' %}#icon"/></svg></span>{% trans "Notificaciones" %}{% if new_notifications %}<span class="badge">{{ new_notifications }}<span class="visually-hidden"> {% trans "sin leer" %}</span></span>{% endif %}</a></li>
       <li><a class="app-nav__item" href="{% url 'my_profile' %}"{% if section == 'profile' %} aria-current="page"{% endif %}><span class="app-nav__icon"><svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/user.svg' %}#icon"/></svg></span><span class="app-nav__short">{% trans "Perfil" %}</span><span class="app-nav__long">{% trans "Mi perfil" %}</span></a></li>
     </ul>
+    <a class="btn btn--primary btn--block app-nav__publish desktop-only--flex" href="{% url 'post_create' %}"><svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/plus.svg' %}#icon"/></svg>{% trans "Publicar" %}</a>
+    <div class="app-nav__footer desktop-only">
+      <a class="app-nav__item" href="{% url 'logout' %}"><span class="app-nav__icon"><svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/logout.svg' %}#icon"/></svg></span>{% trans "Cerrar sesión" %}</a>
+    </div>
   </nav>
 
   <main id="main" class="app-main">

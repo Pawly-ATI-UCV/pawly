@@ -1,5 +1,5 @@
 {% extends "base_admin.html" %}
-{% load static i18n %}
+{% load static i18n pawly_tags %}
 
 {% block content %}
     <div class="page-bar">
@@ -17,10 +17,10 @@
 
     <div class="page-content">
       <ul class="stat-grid" aria-label="{% trans 'Resumen' %}">
-        <li class="stat card"><span class="stat__value">{{ active_users }}</span><span class="stat__label">{% trans "Usuarios activos" %}</span></li>
-        <li class="stat card"><span class="stat__value">{{ pets_count }}</span><span class="stat__label">{% trans "Mascotas registradas" %}</span></li>
-        <li class="stat card"><span class="stat__value">{{ adoption_count }}</span><span class="stat__label">{% trans "Mascotas en adopción" %}</span></li>
-        <li class="stat card"><span class="stat__value">{{ applications_count }}</span><span class="stat__label">{% trans "Postulaciones" %}</span></li>
+        <li class="stat card"><span class="stat__value">{{ active_users }}</span><span class="stat__label">{% trans "Usuarios activos" %}</span><span class="stat__delta">{% blocktrans %}+{{ new_users }} este mes{% endblocktrans %}</span></li>
+        <li class="stat card"><span class="stat__value">{{ pets_count }}</span><span class="stat__label">{% trans "Mascotas registradas" %}</span><span class="stat__delta">{% blocktrans %}+{{ new_pets }} este mes{% endblocktrans %}</span></li>
+        <li class="stat card"><span class="stat__value">{{ adoptions }}</span><span class="stat__label">{% trans "Adopciones concretadas" %}</span><span class="stat__delta">{% blocktrans %}{{ applications_month }} postulaciones este mes{% endblocktrans %}</span></li>
+        <li class="stat card"><span class="stat__value">0</span><span class="stat__label">{% trans "Reportes pendientes" %}</span><span class="stat__delta">{% trans "0 con más de 48 h" %}</span></li>
       </ul>
 
       <div class="admin-grid">
@@ -49,7 +49,7 @@
                 <td class="users-table__user"><span class="row"><img class="avatar avatar--sm" src="{{ account.avatar_url }}" alt=""><span class="text-strong">{{ account.display_name }}</span></span></td>
                 <td class="users-table__email">{{ account.email }}</td>
                 <td class="users-table__pets">{{ account.pets_count }}</td>
-                <td class="users-table__status">{% if account.is_active %}<span class="tag tag--green">{% trans "Activo" %}</span>{% else %}<span class="tag tag--red">{% trans "Vetado" %}</span>{% endif %}</td>
+                <td class="users-table__status">{% if not account.is_active %}<span class="tag tag--red">{% trans "Vetado" %}</span>{% else %}<span class="tag tag--green">{% trans "Activo" %}</span>{% endif %}</td>
                 <td class="users-table__actions">
                   <a class="icon-btn" href="{% url 'admin:SecurityApp_user_change' account.id %}" aria-label="{% blocktrans with name=account.display_name %}Editar a {{ name }}{% endblocktrans %}"><svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/edit.svg' %}#icon"/></svg></a>
                   {% if account != user %}
@@ -72,33 +72,7 @@
 
         <section class="stack" aria-labelledby="reports-title">
           <h2 class="title-3" id="reports-title">{% trans "Reportes pendientes" %}</h2>
-          <article class="report-card card">
-            <p class="row row--between"><span class="tag tag--red">{% trans "Publicación" %}</span><time class="text-xs text-muted" datetime="2026-09-19">{% trans "hace 3 días" %}</time></p>
-            <p class="text-small"><strong>Pedro Ramírez</strong> · "Vendo cachorros de raza escríbeme al…"</p>
-            <p class="text-xs text-muted">{% trans "3 reportes · Motivo: venta de animales" %}</p>
-            <div class="row row--wrap">
-              <a class="btn btn--dark btn--sm" href="{% url 'admin_panel' %}" data-confirm="{% trans '¿Bloquear la publicación de Pedro Ramírez?' %}"><svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/ban.svg' %}#icon"/></svg>{% trans "Bloquear publicación" %}</a>
-              <a class="btn btn--secondary btn--sm" href="{% url 'admin_panel' %}" aria-label="{% trans 'Descartar el reporte de la publicación de Pedro Ramírez' %}">{% trans "Descartar" %}</a>
-            </div>
-          </article>
-          <article class="report-card card">
-            <p class="row row--between"><span class="tag tag--amber">{% trans "Comentario" %}</span><time class="text-xs text-muted" datetime="2026-09-21">{% trans "hace 1 día" %}</time></p>
-            <p class="text-small"><strong>Usuario anónimo_22</strong> · "Ese perro es feo nadie lo va a…"</p>
-            <p class="text-xs text-muted">{% trans "1 reporte · Motivo: acoso" %}</p>
-            <div class="row row--wrap">
-              <a class="btn btn--dark btn--sm" href="{% url 'admin_panel' %}" data-confirm="{% trans '¿Bloquear el comentario de anónimo_22?' %}"><svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/ban.svg' %}#icon"/></svg>{% trans "Bloquear comentario" %}</a>
-              <a class="btn btn--secondary btn--sm" href="{% url 'admin_panel' %}" aria-label="{% trans 'Descartar el reporte del comentario de anónimo_22' %}">{% trans "Descartar" %}</a>
-            </div>
-          </article>
-          <article class="report-card card">
-            <p class="row row--between"><span class="tag tag--red">{% trans "Cuenta" %}</span><time class="text-xs text-muted" datetime="2026-09-22">{% trans "hace 5 h" %}</time></p>
-            <p class="text-small"><strong>promo_mascotas_ve</strong> · Publicidad repetida en comentarios</p>
-            <p class="text-xs text-muted">{% trans "2 reportes · Motivo: spam" %}</p>
-            <div class="row row--wrap">
-              <a class="btn btn--danger btn--sm" href="{% url 'admin_panel' %}" data-confirm="{% trans '¿Vetar la cuenta promo_mascotas_ve?' %}"><svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/ban.svg' %}#icon"/></svg>{% trans "Vetar cuenta" %}</a>
-              <a class="btn btn--secondary btn--sm" href="{% url 'admin_panel' %}" aria-label="{% trans 'Descartar el reporte de la cuenta promo_mascotas_ve' %}">{% trans "Descartar" %}</a>
-            </div>
-          </article>
+          <p class="text-small text-muted">{% trans "No hay reportes pendientes" %}</p>
         </section>
       </div>
     </div>

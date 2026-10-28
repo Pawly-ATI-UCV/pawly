@@ -1,8 +1,10 @@
+from datetime import timedelta
+
 from django.contrib.auth.decorators import login_required, permission_required
-from django.db.models import Count
-from django.http import Http404
+from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy
 from django.views.decorators.http import require_POST
@@ -10,7 +12,7 @@ from django.views.decorators.http import require_POST
 from SecurityApp.models import User
 
 from .forms import ApplicationForm, MessageForm, PetForm
-from .models import Application, Chat, Message, Pet
+from .models import Application, Chat, Message, Pet, Post
 
 # Opciones rápidas del formulario de postulación
 HOME_OPTIONS = {
@@ -21,28 +23,63 @@ HOME_OPTIONS = {
 }
 
 
-def find_demo(item_id):
-    # Las pantallas de ejemplo solo tienen el elemento 1
-    if item_id != 1:
-        raise Http404
-
-
 def get_chats(user):
     chats = list(user.chats.all().order_by('-created_at'))
     for chat in chats:
         chat.other = chat.other_member(user)
+        # Mensajes de la otra persona después del último mensaje propio
+        chat.unread = 0
+        for message in chat.messages.all():
+            chat.unread = 0 if message.sender_id == user.id else chat.unread + 1
     return chats
+
+
+def build_notifications(user):
+    items = []
+
+    # Las notificaciones salen de las postulaciones y los mensajes
+    for application in Application.objects.filter(pet__owner=user):
+        url = reverse('chat_detail', args=[application.chat.id]) if hasattr(application, 'chat') else ''
+        items.append({'kind': 'adoption', 'date': application.created_at, 'user': application.applicant,
+                      'pet': application.pet, 'url': url or reverse('pet_profile', args=[application.pet.id])})
+    for chat in user.chats.all():
+        message = chat.messages.exclude(sender=user).last()
+        if message:
+            items.append({'kind': 'chat', 'date': message.created_at, 'user': message.sender,
+                          'url': reverse('chat_detail', args=[chat.id])})
+
+    items.sort(key=lambda item: item['date'], reverse=True)
+    return items[:30]
 
 
 @login_required
 def home(request):
-    context = {'title': _('Inicio'), 'section': 'home'}
+    context = {
+        'title': _('Inicio'), 'section': 'home',
+        'posts': Post.objects.all(),
+        'pets': Pet.objects.filter(for_adoption=True).exclude(owner=request.user)[:3],
+        'people': User.objects.filter(is_active=True).exclude(id=request.user.id).order_by('-date_joined')[:3],
+    }
     return render(request, 'home.html', context)
 
 
 @login_required
 def search(request):
-    context = {'title': _('Resultados para «luna»'), 'section': 'search', 'query': 'luna'}
+    query = request.GET.get('q', '').strip()
+    kind = request.GET.get('type', 'users')
+    users, pets, posts = [], [], []
+
+    # Busca en personas, mascotas en adopción y publicaciones
+    if query:
+        users = User.objects.filter(is_active=True).exclude(id=request.user.id).filter(
+            Q(username__icontains=query) | Q(profile__full_name__icontains=query) | Q(profile__city__icontains=query))
+        pets = Pet.objects.filter(for_adoption=True).filter(Q(name__icontains=query) | Q(location__icontains=query))
+        posts = Post.objects.filter(text__icontains=query)
+
+    context = {
+        'title': _('Resultados para "%(query)s"') % {'query': query} if query else _('Buscar'),
+        'section': 'search', 'query': query, 'kind': kind, 'users': users, 'pets': pets, 'posts': posts,
+    }
     return render(request, 'search.html', context)
 
 
@@ -57,9 +94,10 @@ def adoption_feed(request):
 @login_required
 def pet_detail(request, pet_id):
     pet = get_object_or_404(Pet, id=pet_id, for_adoption=True)
-    application = Application.objects.filter(pet=pet, applicant=request.user).first()
     context = {
-        'title': f"{pet.name} · {_('Adopción')}", 'section': 'adoption', 'pet': pet, 'application': application,
+        'title': f"{pet.name} · {_('Adopción')}", 'section': 'adoption', 'pet': pet,
+        'application': Application.objects.filter(pet=pet, applicant=request.user).first(),
+        'owner_adoptions': Application.objects.filter(pet__owner=pet.owner, status='accepted').count(),
     }
     return render(request, 'pet_detail.html', context)
 
@@ -98,7 +136,14 @@ def application_form(request, pet_id):
 
 @login_required
 def chat_list(request):
-    context = {'title': _('Mensajes'), 'section': 'messages', 'chats': get_chats(request.user)}
+    chats = get_chats(request.user)
+
+    # En escritorio se ve abierta la conversación más reciente
+    chat = chats[0] if chats else None
+    context = {
+        'title': _('Mensajes'), 'section': 'messages', 'chats': chats, 'chat': chat,
+        'other': chat.other if chat else None,
+    }
     return render(request, 'chat_list.html', context)
 
 
@@ -133,7 +178,21 @@ def application_cancel(request, chat_id):
 
 @login_required
 def notifications(request):
-    context = {'title': _('Notificaciones'), 'section': 'notifications'}
+    items = build_notifications(request.user)
+
+    # Se agrupan en hoy, ayer y antes
+    today = timezone.localdate()
+    groups = {'today': [], 'yesterday': [], 'before': []}
+    for item in items:
+        day = timezone.localtime(item['date']).date()
+        if day == today:
+            groups['today'].append(item)
+        elif day == today - timedelta(days=1):
+            groups['yesterday'].append(item)
+        else:
+            groups['before'].append(item)
+
+    context = {'title': _('Notificaciones'), 'section': 'notifications', 'groups': groups, 'has_items': bool(items)}
     return render(request, 'notifications.html', context)
 
 
@@ -142,6 +201,7 @@ def my_profile(request):
     context = {
         'title': _('Mi perfil'), 'section': 'profile', 'pets': request.user.pets.all(),
         'applications': request.user.applications.all(),
+        'posts': Post.objects.filter(author=request.user),
     }
     return render(request, 'my_profile.html', context)
 
@@ -197,8 +257,14 @@ def pet_delete(request, pet_id):
 
 @login_required
 def user_profile(request, user_id):
-    find_demo(user_id)
-    context = {'title': 'Laura Barreto', 'section': 'search'}
+    account = get_object_or_404(User, id=user_id, is_active=True)
+    if account == request.user:
+        return redirect('my_profile')
+
+    context = {
+        'title': account.display_name(), 'section': 'search', 'account': account, 'pets': account.pets.all(),
+        'posts': Post.objects.filter(author=account),
+    }
     return render(request, 'user_profile.html', context)
 
 
@@ -210,15 +276,23 @@ def post_create(request):
 
 @login_required
 def post_detail(request, post_id):
-    find_demo(post_id)
-    context = {'title': _('Publicación de Andrea Salas'), 'section': 'home'}
+    post = get_object_or_404(Post, id=post_id)
+    context = {'title': _('Publicación de %(name)s') % {'name': post.author.display_name()}, 'section': 'home',
+               'post': post}
     return render(request, 'post_detail.html', context)
 
 
 @login_required
 def report(request, post_id):
-    find_demo(post_id)
-    context = {'title': _('Reportar publicación'), 'section': 'home', 'modal': True}
+    post = get_object_or_404(Post, id=post_id)
+    context = {'title': _('Reportar publicación'), 'section': 'home', 'modal': True, 'post': post}
+    return render(request, 'report.html', context)
+
+
+@login_required
+def report_account(request, user_id):
+    account = get_object_or_404(User, id=user_id, is_active=True)
+    context = {'title': _('Reportar cuenta'), 'section': 'search', 'modal': True, 'account': account}
     return render(request, 'report.html', context)
 
 
@@ -226,13 +300,16 @@ def report(request, post_id):
 @login_required
 @permission_required('SecurityApp.moderate_content', raise_exception=True)
 def admin_panel(request):
+    month_start = timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     context = {
         'title': _('Panel de administración'),
-        'users': User.objects.annotate(pets_count=Count('pets')).order_by('-date_joined')[:10],
+        'users': User.objects.annotate(pets_count=Count('pets')).order_by('-date_joined')[:20],
         'active_users': User.objects.filter(is_active=True).count(),
+        'new_users': User.objects.filter(date_joined__gte=month_start).count(),
         'pets_count': Pet.objects.count(),
-        'adoption_count': Pet.objects.filter(for_adoption=True).count(),
-        'applications_count': Application.objects.count(),
+        'new_pets': Pet.objects.filter(created_at__gte=month_start).count(),
+        'adoptions': Application.objects.filter(status='accepted').count(),
+        'applications_month': Application.objects.filter(created_at__gte=month_start).count(),
     }
     return render(request, 'admin_panel.html', context)
 

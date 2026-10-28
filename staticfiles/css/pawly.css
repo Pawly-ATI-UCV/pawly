@@ -802,3 +802,7 @@ table { border-collapse: collapse; }
 
 /* Formularios de un solo botón dentro de una fila */
 .inline-form { display: contents; }
+
+
+/* Botón Publicar del menú lateral */
+.app-nav__publish { margin-top: 12px; justify-content: center; }

@@ -1,0 +1,20 @@
+{% load static i18n pawly_tags %}
+<!-- Una notificación, unread pone el punto de no leída -->
+<li class="notif{% if unread %} notif--unread{% endif %}">
+  {% if item.kind == 'adoption' %}
+  <span class="notif__icon notif__icon--green"><svg class="icon icon--sm icon--fill" aria-hidden="true"><use href="{% static 'img/icons/paw.svg' %}#icon"/></svg></span>
+  <div class="notif__body">
+    <p>{% blocktrans with name=item.user.display_name pet=item.pet.name %}<strong>{{ name }}</strong> se postuló para adoptar a <strong>{{ pet }}</strong>.{% endblocktrans %}</p>
+    <time class="notif__time" datetime="{{ item.date|date:'c' }}">{{ item.date|ago }}</time>
+  </div>
+  <div class="notif__actions"><a class="btn btn--soft btn--sm" href="{{ item.url }}">{% trans "Abrir chat" %}</a></div>
+  {% else %}
+  <span class="notif__icon notif__icon--blue"><svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/chat.svg' %}#icon"/></svg></span>
+  <div class="notif__body">
+    <p>{% blocktrans with name=item.user.display_name %}<strong>{{ name }}</strong> te envió un mensaje.{% endblocktrans %}</p>
+    <time class="notif__time" datetime="{{ item.date|date:'c' }}">{{ item.date|ago }}</time>
+  </div>
+  <div class="notif__actions"><a class="btn btn--soft btn--sm" href="{{ item.url }}">{% trans "Abrir chat" %}</a></div>
+  {% endif %}
+  {% if unread %}<span class="dot" data-hide-when="leidas=si"><span class="visually-hidden">{% trans "Sin leer" %}</span></span>{% endif %}
+</li>

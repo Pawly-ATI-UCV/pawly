@@ -1,0 +1,63 @@
+{% load static i18n %}
+<!-- Conversación abierta, se usa en Mensajes y en la conversación -->
+{% with application=chat.application %}
+<div class="chat-panel__head">
+  <a class="icon-btn mobile-only" href="{% url 'chat_list' %}" aria-label="{% trans 'Volver a Mensajes' %}"><svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/back.svg' %}#icon"/></svg></a>
+  <img class="avatar" src="{{ other.avatar_url }}" alt="">
+  <div class="grow">
+    <{{ heading }} class="text-strong" id="chat-title">{{ other.display_name }}</{{ heading }}>
+    {% if application %}
+    <p class="text-xs text-muted">{% if application.applicant == user %}{% trans "Chat abierto por tu postulación a" %}{% else %}{% trans "Chat abierto por la postulación a" %}{% endif %} <strong>{{ application.pet.name }}</strong></p>
+    {% endif %}
+  </div>
+  {% if application %}
+  <div class="row">
+    <a class="btn btn--secondary btn--sm" href="{% url 'pet_detail' application.pet.id %}">{% blocktrans with name=application.pet.name %}Ver a {{ name }}{% endblocktrans %}</a>
+    {% if application.applicant == user and application.status == 'pending' %}
+    <form class="inline-form" method="post" action="{% url 'application_cancel' chat.id %}">
+      {% csrf_token %}
+      <button class="btn btn--secondary btn--sm" type="submit"
+        data-confirm="{% blocktrans with name=application.pet.name owner=other.display_name %}¿Cancelar tu postulación para adoptar a {{ name }}? Le avisaremos a {{ owner }}.{% endblocktrans %}">{% trans "Cancelar postulación" %}</button>
+    </form>
+    {% endif %}
+    <a class="icon-btn" href="{% url 'user_profile' other.id %}" aria-label="{% blocktrans with name=other.display_name %}Ver perfil de {{ name }}{% endblocktrans %}"><svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/more.svg' %}#icon"/></svg></a>
+  </div>
+  {% endif %}
+</div>
+
+<ol class="chat-panel__messages" data-refresh aria-label="{% blocktrans with name=other.display_name %}Mensajes con {{ name }}{% endblocktrans %}">
+  {% if application %}
+  {% if application.applicant == user %}
+  <li class="sysmsg">{% trans "Te postulaste para adoptar a" %} <strong>{{ application.pet.name }}</strong> {% trans "el" %} <time datetime="{{ application.created_at|date:'Y-m-d' }}">{{ application.created_at|date:'j b Y' }}</time>{% trans ". Este chat se abrió automáticamente para que coordinen." %}</li>
+  {% else %}
+  <li class="sysmsg">{% blocktrans with name=application.applicant.display_name pet=application.pet.name %}{{ name }} se postuló para adoptar a {{ pet }}. Este chat se abrió automáticamente para que coordinen.{% endblocktrans %}</li>
+  {% endif %}
+  {% endif %}
+  {% for message in chat.messages.all %}
+  <li class="bubble {% if message.sender == user %}bubble--own{% else %}bubble--other{% endif %}">{{ message.text|linebreaksbr }}<time class="bubble__time" datetime="{{ message.created_at|date:'c' }}">{{ message.created_at|date:'H:i' }}</time></li>
+  {% endfor %}
+  {% if application.status == 'cancelled' %}
+  {% if application.applicant == user %}
+  <li class="sysmsg">{% trans "Cancelaste tu postulación para adoptar a" %} <strong>{{ application.pet.name }}</strong>{% blocktrans with owner=other.display_name %}. Le avisamos a {{ owner }}.{% endblocktrans %}</li>
+  {% else %}
+  <li class="sysmsg">{% blocktrans with pet=application.pet.name %}La postulación para adoptar a {{ pet }} fue cancelada.{% endblocktrans %}</li>
+  {% endif %}
+  {% endif %}
+</ol>
+
+<form class="chat-form" method="post" action="{% url 'chat_detail' chat.id %}" data-validate novalidate>
+  {% csrf_token %}
+  <label class="icon-btn icon-btn--bordered">
+    <svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/image.svg' %}#icon"/></svg>
+    <span class="visually-hidden">{% trans "Adjuntar foto" %}</span>
+    <input class="visually-hidden" type="file" name="photo" accept="image/*">
+  </label>
+  <div class="field grow">
+    <label class="visually-hidden" for="chat-message">{% trans "Escribe un mensaje" %}</label>
+    <input class="input" id="chat-message" name="text" type="text" placeholder="{% trans 'Escribe un mensaje…' %}" autocomplete="off"
+      required data-error="{% trans 'Escribe un mensaje antes de enviarlo' %}" aria-describedby="chat-message-error">
+    <p class="field__error" id="chat-message-error" data-error-for="chat-message" role="alert" hidden></p>
+  </div>
+  <button class="btn btn--primary btn--collapse" type="submit"><svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/send.svg' %}#icon"/></svg><span class="btn__label">{% trans "Enviar" %}</span></button>
+</form>
+{% endwith %}

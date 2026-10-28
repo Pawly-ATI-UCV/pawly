@@ -16,7 +16,7 @@
           <label class="field__label" for="settings-email">{% trans "Correo electrónico" %}</label>
           <div class="field__control">
             <svg class="icon icon--sm field__icon" aria-hidden="true"><use href="{% static 'img/icons/mail.svg' %}#icon"/></svg>
-            <input class="input input--with-icon" id="settings-email" name="email" type="email" value="darvin.hernandez@gmail.com" autocomplete="email">
+            <input class="input input--with-icon" id="settings-email" name="email" type="email" value="{{ user.email }}" autocomplete="email">
           </div>
         </div>
         <div class="field">

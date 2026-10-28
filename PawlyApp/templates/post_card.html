@@ -1,0 +1,24 @@
+{% load static i18n pawly_tags %}
+<!-- Tarjeta de una publicación, compact es la versión de los perfiles -->
+<article class="post card">
+  <header class="post__head">
+    {% if compact %}
+    <img class="avatar avatar--sm" src="{{ post.author.avatar_url }}" alt="">
+    <p class="post__meta"><time datetime="{{ post.created_date|date:'c' }}">{{ post.created_date|ago }}</time></p>
+    {% else %}
+    <img class="avatar" src="{{ post.author.avatar_url }}" alt="">
+    <div class="post__who">
+      <a class="post__author" href="{% url 'user_profile' post.author.id %}">{{ post.author.display_name }}</a>
+      <p class="post__meta">@{{ post.author.username }}{% if post.author.profile.city %} · {{ post.author.profile.city }}{% endif %} · <time datetime="{{ post.created_date|date:'c' }}">{{ post.created_date|ago }}</time></p>
+    </div>
+    {% if post.author != user %}
+    <a class="icon-btn post__more" href="{% url 'report' post.id %}" aria-label="{% blocktrans with name=post.author.display_name %}Más opciones de la publicación de {{ name }}{% endblocktrans %}"><svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/more.svg' %}#icon"/></svg></a>
+    {% endif %}
+    {% endif %}
+  </header>
+  <p class="post__text">{{ post.text|linebreaksbr }}</p>
+  <footer class="post__actions">
+    <button class="like-btn" type="button" aria-pressed="false"><svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/heart.svg' %}#icon"/></svg>0 <span class="{% if compact %}visually-hidden{% else %}sr-only-mobile{% endif %}">{% trans "me gusta" %}</span></button>
+    <a class="post__action" href="{% url 'post_detail' post.id %}"><svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/chat.svg' %}#icon"/></svg>0 <span class="{% if compact %}visually-hidden{% else %}sr-only-mobile{% endif %}">{% trans "comentarios" %}</span></a>
+  </footer>
+</article>

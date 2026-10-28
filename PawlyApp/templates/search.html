@@ -8,63 +8,83 @@
       <form class="search-box search-box--page" action="{% url 'search' %}" role="search" aria-label="{% trans 'Nueva búsqueda' %}">
         <svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/search.svg' %}#icon"/></svg>
         <label class="visually-hidden" for="page-search">{% trans "Buscar personas, mascotas o publicaciones" %}</label>
-        <input id="page-search" name="q" type="search" value="luna" placeholder="{% trans 'Buscar personas, mascotas o publicaciones' %}">
+        <input id="page-search" name="q" type="search" value="{{ query }}" placeholder="{% trans 'Buscar personas, mascotas o publicaciones' %}">
       </form>
       <a class="link text-small" href="{% url 'home' %}">{% trans "Cancelar" %}</a>
     </div>
 
     <div class="page-content">
+      {% if query %}
       <div class="stack stack--sm">
-        <h1 class="title-1">{% trans "Resultados para «luna»" %}</h1>
-        <p class="text-muted text-small">{% trans "3 personas · 2 mascotas · 8 publicaciones" %}</p>
+        <h1 class="title-1">{% blocktrans %}Resultados para "{{ query }}"{% endblocktrans %}</h1>
+        <p class="text-muted text-small">{% blocktrans with users=users|length pets=pets|length posts=posts|length %}{{ users }} personas · {{ pets }} mascotas · {{ posts }} publicaciones{% endblocktrans %}</p>
       </div>
 
-      <fieldset class="tabs">
-        <legend class="visually-hidden">{% trans "Tipo de resultado" %}</legend>
-        <input type="radio" id="tab-users" name="type" value="users" checked><label for="tab-users">{% trans "Usuarios" %}</label>
-        <input type="radio" id="tab-pets" name="type" value="pets"><label for="tab-pets">{% trans "Mascotas" %}</label>
-        <input type="radio" id="tab-posts" name="type" value="posts"><label for="tab-posts">{% trans "Publicaciones" %}</label>
-      </fieldset>
+      <!-- Tipo de resultado -->
+      <form action="{% url 'search' %}" data-autosubmit>
+        <input type="hidden" name="q" value="{{ query }}">
+        <fieldset class="tabs">
+          <legend class="visually-hidden">{% trans "Tipo de resultado" %}</legend>
+          <input type="radio" id="tab-users" name="type" value="users"{% if kind == 'users' %} checked{% endif %}><label for="tab-users">{% trans "Usuarios" %}</label>
+          <input type="radio" id="tab-pets" name="type" value="pets"{% if kind == 'pets' %} checked{% endif %}><label for="tab-pets">{% trans "Mascotas" %}</label>
+          <input type="radio" id="tab-posts" name="type" value="posts"{% if kind == 'posts' %} checked{% endif %}><label for="tab-posts">{% trans "Publicaciones" %}</label>
+        </fieldset>
+      </form>
 
+      {% if kind == 'users' %}
       <ul class="person-grid">
+        {% for person in users %}
         <li class="person">
-          <img class="avatar avatar--lg" src="{{ MEDIA_URL }}avatars/avatar-m.svg" alt="">
-          <div class="person__text"><a class="person__name" href="{% url 'user_profile' 1 %}">Luna Martínez</a><p class="person__meta">@lunamtz · Baruta</p></div>
-          <button class="btn btn--secondary btn--sm btn--follow person__action" type="button" aria-pressed="false"><span class="when-off">{% trans "Seguir" %}</span><span class="when-on">{% trans "Siguiendo" %}</span><span class="visually-hidden"> {% trans "a Luna Martínez" %}</span></button>
+          <img class="avatar avatar--lg" src="{{ person.avatar_url }}" alt="">
+          <div class="person__text"><a class="person__name" href="{% url 'user_profile' person.id %}">{{ person.display_name }}</a><p class="person__meta">@{{ person.username }}{% if person.profile.city %} · {{ person.profile.city }}{% endif %}</p></div>
+          {% include "follow_button.html" with extra=" person__action" %}
         </li>
-        <li class="person">
-          <img class="avatar avatar--lg" src="{{ MEDIA_URL }}avatars/avatar-m.svg" alt="">
-          <div class="person__text"><a class="person__name" href="{% url 'user_profile' 1 %}">Luna Delgado</a><p class="person__meta">@ldelgado · Los Teques</p></div>
-          <button class="btn btn--secondary btn--sm btn--follow person__action" type="button" aria-pressed="true"><span class="when-off">{% trans "Seguir" %}</span><span class="when-on">{% trans "Siguiendo" %}</span><span class="visually-hidden"> {% trans "a Luna Delgado" %}</span></button>
-        </li>
-        <li class="person">
-          <img class="avatar avatar--lg" src="{{ MEDIA_URL }}avatars/avatar-m.svg" alt="">
-          <div class="person__text"><a class="person__name" href="{% url 'user_profile' 1 %}">Lunita Rescates</a><p class="person__meta">@lunitarescates · Chacao</p></div>
-          <button class="btn btn--secondary btn--sm btn--follow person__action" type="button" aria-pressed="false"><span class="when-off">{% trans "Seguir" %}</span><span class="when-on">{% trans "Siguiendo" %}</span><span class="visually-hidden"> {% trans "a Lunita Rescates" %}</span></button>
-        </li>
+        {% empty %}
+        <li class="text-small text-muted">{% trans "No encontramos personas con ese nombre" %}</li>
+        {% endfor %}
       </ul>
+      {% endif %}
 
+      {% if kind == 'users' or kind == 'pets' %}
       <section class="stack">
+        {% if kind == 'users' %}
         <div class="section-head">
           <h2 class="title-3">{% trans "Mascotas con ese nombre" %}</h2>
-          <a class="link text-small" href="#tab-pets">{% trans "Ver las 2" %}</a>
+          <a class="link text-small" href="?q={{ query|urlencode }}&amp;type=pets">{% blocktrans with total=pets|length %}Ver las {{ total }}{% endblocktrans %}</a>
         </div>
+        {% endif %}
         <ul class="pet-grid">
+          {% for pet in pets %}
+          {% if kind == 'pets' or forloop.counter <= 4 %}
           <li class="pet-card card">
-            <img class="pet-card__photo" src="{{ MEDIA_URL }}pets/d2.jpg" alt="Luna, perrita de pelo blanco y rizado, en un sillón">
+            <img class="pet-card__photo" src="{{ pet.photo_url }}" alt="{% blocktrans with name=pet.name %}Foto de {{ name }}{% endblocktrans %}">
             <div class="pet-card__body">
-              <h3 class="pet-card__name"><a class="pet-card__link" href="{% url 'user_profile' 1 %}">Luna</a></h3>
-              <p class="pet-card__meta">Mestiza · de Andrea Salas</p>
+              <h3 class="pet-card__name"><a class="pet-card__link" href="{% url 'pet_detail' pet.id %}">{{ pet.name }}</a></h3>
+              <p class="pet-card__meta">{% blocktrans with species=pet.get_species_display owner=pet.owner.display_name %}{{ species }} · de {{ owner }}{% endblocktrans %}</p>
             </div>
           </li>
-          <li class="pet-card card">
-            <img class="pet-card__photo" src="{{ MEDIA_URL }}pets/d6.jpg" alt="Luna, perra blanca con orejas marrones, echada">
-            <div class="pet-card__body">
-              <h3 class="pet-card__name"><a class="pet-card__link" href="{% url 'user_profile' 1 %}">Luna</a></h3>
-              <p class="pet-card__meta">Mestiza · de Pedro Ramírez</p>
-            </div>
-          </li>
+          {% endif %}
+          {% empty %}
+          <li class="text-small text-muted">{% trans "No encontramos mascotas con ese nombre" %}</li>
+          {% endfor %}
         </ul>
       </section>
+      {% endif %}
+
+      {% if kind == 'posts' %}
+      <section class="stack">
+        {% for post in posts %}
+          {% include "post_card.html" %}
+        {% empty %}
+        <p class="text-small text-muted">{% trans "No encontramos publicaciones con ese texto" %}</p>
+        {% endfor %}
+      </section>
+      {% endif %}
+      {% else %}
+      <div class="stack stack--sm">
+        <h1 class="title-1">{% trans "Buscar" %}</h1>
+        <p class="text-muted text-small">{% trans "Escribe el nombre de una persona, una mascota o una ciudad en el buscador." %}</p>
+      </div>
+      {% endif %}
     </div>
 {% endblock %}

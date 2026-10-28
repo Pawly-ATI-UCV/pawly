@@ -1,26 +1,35 @@
 {% extends "base_app.html" %}
-{% load static i18n %}
+{% load static i18n pawly_tags %}
 
 {% block content %}
-    <!-- La publicación reportada queda de fondo -->
+    <!-- Lo reportado queda de fondo -->
     <div class="overlay-context feed-layout" inert>
       <div class="feed-layout__main">
         <article class="post card">
+          {% if post %}
           <header class="post__head">
-            <img class="avatar" src="{{ MEDIA_URL }}avatars/avatar-h.svg" alt="">
-            <div class="post__who"><p class="post__author">Pedro Ramírez</p><p class="post__meta">@pramirez · El Hatillo · hace 5 h</p></div>
+            <img class="avatar" src="{{ post.author.avatar_url }}" alt="">
+            <div class="post__who"><p class="post__author">{{ post.author.display_name }}</p><p class="post__meta">@{{ post.author.username }}{% if post.author.profile.city %} · {{ post.author.profile.city }}{% endif %} · {{ post.created_date|ago }}</p></div>
           </header>
-          <p class="post__text">Vendo cachorros de raza escríbeme al 0412…</p>
+          <p class="post__text">{{ post.text|truncatechars:120 }}</p>
+          {% else %}
+          <header class="post__head">
+            <img class="avatar" src="{{ account.avatar_url }}" alt="">
+            <div class="post__who"><p class="post__author">{{ account.display_name }}</p><p class="post__meta">@{{ account.username }}{% if account.profile.city %} · {{ account.profile.city }}{% endif %}</p></div>
+          </header>
+          <p class="post__text">{{ account.profile.about|truncatechars:120 }}</p>
+          {% endif %}
         </article>
       </div>
     </div>
     <div class="overlay-backdrop"></div>
 
-    <form class="sheet" aria-labelledby="report-title" data-validate data-next="{% url 'home' %}?reporte=enviado" novalidate>
+    {% if post %}{% url 'post_detail' post.id as back_url %}{% else %}{% url 'user_profile' account.id as back_url %}{% endif %}
+    <form class="sheet" aria-labelledby="report-title" data-validate data-next="{% if post %}{% url 'home' %}{% else %}{{ back_url }}{% endif %}?reporte=enviado" novalidate>
       <div class="sheet__handle"></div>
       <div class="sheet__head">
-        <h1 class="title-2" id="report-title">{% trans "Reportar publicación" %}</h1>
-        <a class="icon-btn" href="{% url 'home' %}" data-close aria-label="{% trans 'Cerrar sin reportar' %}"><svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/close.svg' %}#icon"/></svg></a>
+        <h1 class="title-2" id="report-title">{{ title }}</h1>
+        <a class="icon-btn" href="{{ back_url }}" data-close aria-label="{% trans 'Cerrar sin reportar' %}"><svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/close.svg' %}#icon"/></svg></a>
       </div>
       <p class="text-small text-muted">{% trans "Cuéntanos qué está mal. El equipo de Pawly lo revisa y no se le avisa a la persona." %}</p>
 
@@ -35,13 +44,13 @@
 
       <div class="field">
         <label class="field__label" for="report-details">{% trans "Detalles (opcional)" %}</label>
-        <textarea class="input" id="report-details" name="details" placeholder="Agrega contexto si quieres"></textarea>
+        <textarea class="input" id="report-details" name="details" placeholder="{% trans 'Agrega contexto si quieres' %}"></textarea>
       </div>
 
       <div class="sheet__footer">
         <p class="sheet__note">{% trans "Los reportes son anónimos." %}</p>
         <div class="sheet__actions">
-          <a class="btn btn--secondary" href="{% url 'home' %}">{% trans "Cancelar" %}</a>
+          <a class="btn btn--secondary" href="{{ back_url }}">{% trans "Cancelar" %}</a>
           <button class="btn btn--primary" type="submit">{% trans "Enviar reporte" %}</button>
         </div>
       </div>

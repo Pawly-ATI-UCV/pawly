@@ -6,7 +6,7 @@
       <section class="chat-list desktop-only--flex" aria-labelledby="chat-list-title">
         <div class="section-head">
           <h2 class="title-2" id="chat-list-title">{% trans "Mensajes" %}</h2>
-          <a class="icon-btn icon-btn--bordered" href="{% url 'user_profile' 1 %}" aria-label="{% trans 'Nueva conversación' %}"><svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/edit.svg' %}#icon"/></svg></a>
+          <a class="icon-btn icon-btn--bordered" href="{% url 'search' %}" aria-label="{% trans 'Nueva conversación' %}"><svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/edit.svg' %}#icon"/></svg></a>
         </div>
         <form class="search-box search-box--page" action="{% url 'chat_list' %}" role="search" aria-label="{% trans 'Buscar conversación' %}">
           <svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/search.svg' %}#icon"/></svg>
@@ -14,60 +14,12 @@
           <input id="chat-search" name="q" type="search" placeholder="{% trans 'Buscar conversación' %}">
         </form>
 
+
         <h3 class="eyebrow">{% trans "Chats" %}</h3>
         {% include "chat_items.html" %}
       </section>
       <section class="chat-panel" aria-labelledby="chat-title">
-        <div class="chat-panel__head">
-          <a class="icon-btn mobile-only" href="{% url 'chat_list' %}" aria-label="{% trans 'Volver a Mensajes' %}"><svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/back.svg' %}#icon"/></svg></a>
-          <img class="avatar" src="{{ other.avatar_url }}" alt="">
-          <div class="grow">
-            <h1 class="text-strong" id="chat-title">{{ other.display_name }}</h1>
-            {% if chat.application %}
-            <p class="text-xs text-muted">{% trans "Chat abierto por la postulación a" %} <strong>{{ chat.application.pet.name }}</strong></p>
-            {% endif %}
-          </div>
-          {% if chat.application %}
-          <div class="row">
-            <a class="btn btn--secondary btn--sm" href="{% url 'pet_detail' chat.application.pet.id %}">{% blocktrans with name=chat.application.pet.name %}Ver a {{ name }}{% endblocktrans %}</a>
-            {% if chat.application.applicant == user and chat.application.status == 'pending' %}
-            <form class="inline-form" method="post" action="{% url 'application_cancel' chat.id %}">
-              {% csrf_token %}
-              <button class="btn btn--secondary btn--sm" type="submit"
-                data-confirm="{% blocktrans with name=chat.application.pet.name %}¿Cancelar tu postulación para adoptar a {{ name }}?{% endblocktrans %}">{% trans "Cancelar postulación" %}</button>
-            </form>
-            {% endif %}
-          </div>
-          {% endif %}
-        </div>
-
-        <ol class="chat-panel__messages" aria-label="{% blocktrans with name=other.display_name %}Mensajes con {{ name }}{% endblocktrans %}">
-          {% if chat.application %}
-          <li class="sysmsg">{% blocktrans with name=chat.application.applicant.display_name pet=chat.application.pet.name %}{{ name }} se postuló para adoptar a {{ pet }}. Este chat se abrió automáticamente para que coordinen.{% endblocktrans %}</li>
-          {% endif %}
-          {% for message in chat.messages.all %}
-          <li class="bubble {% if message.sender == user %}bubble--own{% else %}bubble--other{% endif %}">{{ message.text|linebreaksbr }}<time class="bubble__time" datetime="{{ message.created_at|date:'c' }}">{{ message.created_at|date:'H:i' }}</time></li>
-          {% endfor %}
-          {% if chat.application.status == 'cancelled' %}
-          <li class="sysmsg">{% blocktrans with pet=chat.application.pet.name %}La postulación para adoptar a {{ pet }} fue cancelada.{% endblocktrans %}</li>
-          {% endif %}
-        </ol>
-
-        <form class="chat-form" method="post" data-validate novalidate>
-          {% csrf_token %}
-          <label class="icon-btn icon-btn--bordered">
-            <svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/image.svg' %}#icon"/></svg>
-            <span class="visually-hidden">{% trans "Adjuntar foto" %}</span>
-            <input class="visually-hidden" type="file" name="photo" accept="image/*">
-          </label>
-          <div class="field grow">
-            <label class="visually-hidden" for="chat-message">{% trans "Escribe un mensaje" %}</label>
-            <input class="input" id="chat-message" name="text" type="text" placeholder="{% trans 'Escribe un mensaje…' %}" autocomplete="off"
-              required data-error="{% trans 'Escribe un mensaje antes de enviarlo' %}" aria-describedby="chat-message-error">
-            <p class="field__error" id="chat-message-error" data-error-for="chat-message" role="alert" hidden></p>
-          </div>
-          <button class="btn btn--primary btn--collapse" type="submit"><svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/send.svg' %}#icon"/></svg><span class="btn__label">{% trans "Enviar" %}</span></button>
-        </form>
+        {% include "chat_conversation.html" with heading="h1" %}
       </section>
     </div>
 {% endblock %}

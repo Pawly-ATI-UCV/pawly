@@ -1,0 +1,3 @@
+{% load i18n %}
+<!-- Botón de seguir, extra son las clases de cada pantalla -->
+<button class="btn btn--secondary btn--sm btn--follow{{ extra }}" type="button" aria-pressed="false"><span class="when-off">{% trans "Seguir" %}</span><span class="when-on">{% trans "Siguiendo" %}</span><span class="visually-hidden"> {% blocktrans with name=person.display_name %}a {{ name }}{% endblocktrans %}</span></button>

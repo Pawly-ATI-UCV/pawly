@@ -71,13 +71,17 @@
         </section>
 
         <nav class="tabs" aria-label="{% trans 'Contenido del perfil' %}">
-          <a class="tabs__link" href="#posts" aria-current="true">{% trans "Publicaciones" %}</a>
+          <a class="tabs__link" href="#posts" aria-current="true">{% blocktrans with total=posts|length %}Publicaciones · {{ total }}{% endblocktrans %}</a>
           <a class="tabs__link" href="#applications">{% blocktrans with total=applications|length %}Postulaciones · {{ total }}{% endblocktrans %}</a>
           <a class="tabs__link desktop-only--inline" href="#saved">{% trans "Guardados" %}</a>
         </nav>
 
         <section class="profile-section" id="posts" aria-label="{% trans 'Publicaciones' %}">
+          {% for post in posts %}
+            {% include "post_card.html" with compact=True %}
+          {% empty %}
           <p class="text-small text-muted">{% trans "Aún no tienes publicaciones" %}</p>
+          {% endfor %}
         </section>
 
         <section class="profile-section" id="applications" aria-labelledby="applications-title">
@@ -95,6 +99,7 @@
           <p class="text-small text-muted">{% trans "Aún no te has postulado para adoptar" %}</p>
           {% endfor %}
         </section>
+
       </div>
     </div>
 {% endblock %}

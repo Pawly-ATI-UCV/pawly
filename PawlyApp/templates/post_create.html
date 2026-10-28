@@ -6,7 +6,7 @@
     <div class="overlay-context feed-layout" inert>
       <div class="feed-layout__main">
         <div class="composer">
-          <img class="avatar avatar--sm" src="{{ MEDIA_URL }}avatars/avatar-h.svg" alt="">
+          <img class="avatar avatar--sm" src="{{ user.avatar_url }}" alt="">
           <span class="composer__prompt">{% trans "¿Qué está haciendo tu mascota hoy?" %}</span>
         </div>
       </div>
@@ -20,29 +20,21 @@
       </div>
 
       <div class="row">
-        <img class="avatar" src="{{ MEDIA_URL }}avatars/avatar-h.svg" alt="">
-        <div><p class="text-strong">Darvin Hernández</p><p class="text-xs text-muted">{% trans "Publica en tu muro" %}</p></div>
+        <img class="avatar" src="{{ user.avatar_url }}" alt="">
+        <div><p class="text-strong">{{ user.display_name }}</p><p class="text-xs text-muted">{% trans "Publica en tu muro" %}</p></div>
       </div>
 
       <div class="field">
         <label class="visually-hidden" for="post-text">{% trans "¿Qué está haciendo tu mascota hoy?" %}</label>
-        <textarea class="input" id="post-text" name="text" placeholder="¿Qué está haciendo tu mascota hoy?"
-          required data-error="Escribe algo o agrega una foto antes de publicar" aria-describedby="post-text-error">Mía y Simón por fin se llevan bien 🐶🐱 después de dos semanas durmiendo juntos @laurabarreto tenías razón</textarea>
+        <textarea class="input" id="post-text" name="text" placeholder="{% trans '¿Qué está haciendo tu mascota hoy?' %}"
+          required data-error="{% trans 'Escribe algo antes de publicar' %}" aria-describedby="post-text-error"></textarea>
         <p class="field__error" id="post-text-error" data-error-for="post-text" role="alert" hidden></p>
       </div>
 
       <div class="post-create__media">
-        <div class="post-create__photo">
-          <img src="{{ MEDIA_URL }}pets/d5.jpg" alt="Foto adjunta: Mía, pastora alemana, echada en el pasto">
-          <button class="icon-btn icon-btn--bordered" type="button" aria-label="{% trans 'Quitar la foto' %}"><svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/close.svg' %}#icon"/></svg></button>
-        </div>
         <div class="stack stack--sm grow">
           <p class="eyebrow">{% trans "Etiquetados" %}</p>
-          <ul class="token-list">
-            <li class="token"><img class="avatar avatar--xs" src="{{ MEDIA_URL }}avatars/avatar-m.svg" alt="">Laura Barreto<button class="token__remove" type="button" aria-label="{% trans 'Quitar a Laura Barreto' %}"><svg class="icon icon--xs" aria-hidden="true"><use href="{% static 'img/icons/close.svg' %}#icon"/></svg></button></li>
-            <li class="token"><img class="avatar avatar--xs" src="{{ MEDIA_URL }}pets/d5.jpg" alt="">Mía<button class="token__remove" type="button" aria-label="{% trans 'Quitar a Mía' %}"><svg class="icon icon--xs" aria-hidden="true"><use href="{% static 'img/icons/close.svg' %}#icon"/></svg></button></li>
-            <li class="token"><img class="avatar avatar--xs" src="{{ MEDIA_URL }}pets/c2.jpg" alt="">Simón<button class="token__remove" type="button" aria-label="{% trans 'Quitar a Simón' %}"><svg class="icon icon--xs" aria-hidden="true"><use href="{% static 'img/icons/close.svg' %}#icon"/></svg></button></li>
-          </ul>
+          <ul class="token-list" id="post-tags"></ul>
           <div class="field">
             <label class="visually-hidden" for="post-tag">{% trans "Etiquetar a una persona o mascota" %}</label>
             <div class="field__control">

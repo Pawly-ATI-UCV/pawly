@@ -8,7 +8,7 @@
       <section class="chat-list" aria-labelledby="chat-list-title">
         <div class="section-head">
           <h1 class="title-2" id="chat-list-title">{% trans "Mensajes" %}</h1>
-          <a class="icon-btn icon-btn--bordered" href="{% url 'user_profile' 1 %}" aria-label="{% trans 'Nueva conversación' %}"><svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/edit.svg' %}#icon"/></svg></a>
+          <a class="icon-btn icon-btn--bordered" href="{% url 'search' %}" aria-label="{% trans 'Nueva conversación' %}"><svg class="icon" aria-hidden="true"><use href="{% static 'img/icons/edit.svg' %}#icon"/></svg></a>
         </div>
         <form class="search-box search-box--page" action="{% url 'chat_list' %}" role="search" aria-label="{% trans 'Buscar conversación' %}">
           <svg class="icon icon--sm" aria-hidden="true"><use href="{% static 'img/icons/search.svg' %}#icon"/></svg>
@@ -16,13 +16,18 @@
           <input id="chat-search" name="q" type="search" placeholder="{% trans 'Buscar conversación' %}">
         </form>
 
+
         <h2 class="eyebrow">{% trans "Chats" %}</h2>
         {% include "chat_items.html" %}
       </section>
-      <section class="chat-panel desktop-only--flex" aria-label="{% trans 'Conversación' %}">
+      <section class="chat-panel desktop-only--flex" aria-labelledby="chat-title">
+        {% if chat %}
+        {% include "chat_conversation.html" with heading="h2" %}
+        {% else %}
         <ol class="chat-panel__messages">
           <li class="sysmsg">{% trans "Elige una conversación para ver los mensajes" %}</li>
         </ol>
+        {% endif %}
       </section>
     </div>
 {% endblock %}
