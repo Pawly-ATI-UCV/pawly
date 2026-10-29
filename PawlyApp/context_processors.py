@@ -4,7 +4,7 @@ from django.utils import timezone
 
 
 def badges(request):
-    # Números del menú: mensajes sin responder y novedades del último día
+    # Números del menú con los mensajes sin responder y las novedades del último día
     if not request.user.is_authenticated:
         return {}
 

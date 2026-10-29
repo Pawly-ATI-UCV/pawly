@@ -26,7 +26,7 @@
           <label class="field__label" for="login-user">{% trans "Usuario o correo" %}</label>
           <div class="field__control">
             <svg class="icon icon--sm field__icon" aria-hidden="true"><use href="{% static 'img/icons/mail.svg' %}#icon"/></svg>
-            <input class="input input--with-icon" id="login-user" name="username" type="text" autocomplete="username" placeholder="darvin.hernandez"
+            <input class="input input--with-icon" id="login-user" name="username" type="text" autocomplete="username" placeholder="{% trans 'Tu usuario o correo' %}"
               value="{{ form.username.value|default_if_none:'' }}"
               required data-error="{% trans 'Escribe tu usuario o correo' %}" aria-describedby="login-user-error">
           </div>

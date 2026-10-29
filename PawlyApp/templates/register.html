@@ -35,7 +35,7 @@
         <div class="form-row form-row--2">
           <div class="field">
             <label class="field__label" for="register-username">{% trans "Nombre de usuario" %}</label>
-            <input class="input" id="register-username" name="username" type="text" autocomplete="username" placeholder="laura.barreto"
+            <input class="input" id="register-username" name="username" type="text" autocomplete="username" placeholder="{% trans 'Tu nombre de usuario' %}"
               value="{{ form.username.value|default_if_none:'' }}"
               required data-error="{% trans 'Elige un nombre de usuario' %}" aria-describedby="register-username-hint register-username-error">
             <p class="field__hint" id="register-username-hint">{% trans "Así te encontrarán otras personas." %}</p>
@@ -43,7 +43,7 @@
           </div>
           <div class="field">
             <label class="field__label" for="register-email">{% trans "Correo electrónico" %}</label>
-            <input class="input" id="register-email" name="email" type="email" autocomplete="email" placeholder="laura.barreto@gmail.com"
+            <input class="input" id="register-email" name="email" type="email" autocomplete="email" placeholder="{% trans 'nombre@correo.com' %}"
               value="{{ form.email.value|default_if_none:'' }}"
               required data-error="{% trans 'Escribe tu correo electrónico' %}" data-error-email="{% trans 'Escribe un correo válido, por ejemplo nombre@gmail.com' %}" aria-describedby="register-email-error">
             <p class="field__error" id="register-email-error" data-error-for="register-email" role="alert"{% if not form.email.errors %} hidden{% endif %}>{{ form.email.errors|join:" " }}</p>

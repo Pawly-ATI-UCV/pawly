@@ -96,7 +96,7 @@
                 <label class="field__label" for="pet-location">{% trans "Ubicación de la mascota" %}</label>
                 <div class="field__control">
                   <svg class="icon icon--sm field__icon" aria-hidden="true"><use href="{% static 'img/icons/pin.svg' %}#icon"/></svg>
-                  <input class="input input--with-icon" id="pet-location" name="location" type="text" value="{{ form.location.value|default_if_none:'' }}" placeholder="Ocumare del Tuy, Miranda">
+                  <input class="input input--with-icon" id="pet-location" name="location" type="text" value="{{ form.location.value|default_if_none:'' }}" placeholder="{% trans 'Ciudad, estado' %}">
                 </div>
               </div>
             </div>

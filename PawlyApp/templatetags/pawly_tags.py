@@ -7,7 +7,7 @@ register = template.Library()
 
 @register.filter
 def ago(value):
-    # Fecha corta como en el diseño: hace 5 min, hace 2 h, ayer, hace 3 días
+    # Fecha corta como en el diseño, por ejemplo hace 2 h o ayer
     if not value:
         return ''
     seconds = (timezone.now() - value).total_seconds()
@@ -27,7 +27,7 @@ def ago(value):
 
 @register.filter
 def short_time(value):
-    # Hora de la lista de chats: 10:45, ayer, lun o 8 sep
+    # Hora corta de la lista de chats, por ejemplo 10:45 o ayer
     if not value:
         return ''
     local = timezone.localtime(value)

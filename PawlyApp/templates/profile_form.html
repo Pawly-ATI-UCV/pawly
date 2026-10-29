@@ -45,7 +45,7 @@
           <div class="form-stack grow">
             <div class="field">
               <label class="field__label" for="profile-name">{% trans "Nombre completo" %}</label>
-              <input class="input" id="profile-name" name="full_name" type="text" autocomplete="name" placeholder="Laura Barreto"
+              <input class="input" id="profile-name" name="full_name" type="text" autocomplete="name" placeholder="{% trans 'Nombre y apellido' %}"
                 value="{{ form.full_name.value|default_if_none:'' }}"
                 required data-error="{% trans 'Escribe tu nombre completo' %}" aria-describedby="profile-name-error">
               <p class="field__error" id="profile-name-error" data-error-for="profile-name" role="alert"{% if not form.full_name.errors %} hidden{% endif %}>{{ form.full_name.errors.0 }}</p>
@@ -78,7 +78,7 @@
                 <label class="field__label" for="profile-city">{% trans "Ciudad" %}</label>
                 <div class="field__control">
                   <svg class="icon icon--sm field__icon" aria-hidden="true"><use href="{% static 'img/icons/pin.svg' %}#icon"/></svg>
-                  <input class="input input--with-icon" id="profile-city" name="city" type="text" value="{{ form.city.value|default_if_none:'' }}" placeholder="Los Teques, Miranda" autocomplete="address-level2">
+                  <input class="input input--with-icon" id="profile-city" name="city" type="text" value="{{ form.city.value|default_if_none:'' }}" placeholder="{% trans 'Ciudad, estado' %}" autocomplete="address-level2">
                 </div>
               </div>
             </div>
