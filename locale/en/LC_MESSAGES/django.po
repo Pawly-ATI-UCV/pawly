@@ -2008,3 +2008,18 @@ msgid "· %(total)s adopción lograda"
 msgid_plural "· %(total)s adopciones logradas"
 msgstr[0] "· %(total)s successful adoption"
 msgstr[1] "· %(total)s successful adoptions"
+
+msgid "Aceptar adopción"
+msgstr "Accept adoption"
+
+msgid "¿Entregar a %(pet)s a %(name)s? Pasará a su perfil."
+msgstr "Give %(pet)s to %(name)s? It will move to their profile."
+
+msgid "¿Rechazar la postulación de %(name)s?"
+msgstr "Reject %(name)s's application?"
+
+msgid "Adopción concretada: %(pet)s ahora es parte de la familia de %(name)s."
+msgstr "Adoption completed: %(pet)s is now part of %(name)s's family."
+
+msgid "La postulación para adoptar a %(pet)s fue rechazada."
+msgstr "The application to adopt %(pet)s was rejected."

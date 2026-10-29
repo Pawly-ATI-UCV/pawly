@@ -37,8 +37,8 @@ def get_chats(user):
 def build_notifications(user):
     items = []
 
-    # Las notificaciones salen de las postulaciones y los mensajes
-    for application in Application.objects.filter(pet__owner=user):
+    # Las notificaciones salen de las postulaciones que recibe y de los mensajes
+    for application in Application.objects.filter(chat__members=user).exclude(applicant=user):
         url = reverse('chat_detail', args=[application.chat.id]) if hasattr(application, 'chat') else ''
         items.append({'kind': 'adoption', 'date': application.created_at, 'user': application.applicant,
                       'pet': application.pet, 'url': url or reverse('pet_profile', args=[application.pet.id])})
@@ -97,7 +97,9 @@ def pet_detail(request, pet_id):
     context = {
         'title': f"{pet.name} · {_('Adopción')}", 'section': 'adoption', 'pet': pet,
         'application': Application.objects.filter(pet=pet, applicant=request.user).first(),
-        'owner_adoptions': Application.objects.filter(pet__owner=pet.owner, status='accepted').count(),
+        # Adopciones que el dueño entregó, la mascota ya no es suya
+        'owner_adoptions': Application.objects.filter(status='accepted', chat__members=pet.owner)
+                                              .exclude(applicant=pet.owner).count(),
     }
     return render(request, 'pet_detail.html', context)
 
@@ -170,8 +172,35 @@ def chat_detail(request, chat_id):
 @require_POST
 def application_cancel(request, chat_id):
     # Solo quien se postuló puede cancelar
-    chat = get_object_or_404(Chat, id=chat_id, application__applicant=request.user)
+    chat = get_object_or_404(Chat, id=chat_id, application__applicant=request.user, application__status='pending')
     chat.application.status = 'cancelled'
+    chat.application.save()
+    return redirect('chat_detail', chat_id=chat.id)
+
+
+@login_required
+@require_POST
+def application_accept(request, chat_id):
+    # Solo el dueño acepta y la mascota pasa al adoptante
+    chat = get_object_or_404(Chat, id=chat_id, application__pet__owner=request.user, application__status='pending')
+    application = chat.application
+    application.status = 'accepted'
+    application.save()
+    pet = application.pet
+    pet.owner = application.applicant
+    pet.for_adoption = False
+    pet.save()
+
+    # Las demás postulaciones a esa mascota quedan rechazadas
+    Application.objects.filter(pet=pet, status='pending').update(status='rejected')
+    return redirect('chat_detail', chat_id=chat.id)
+
+
+@login_required
+@require_POST
+def application_reject(request, chat_id):
+    chat = get_object_or_404(Chat, id=chat_id, application__pet__owner=request.user, application__status='pending')
+    chat.application.status = 'rejected'
     chat.application.save()
     return redirect('chat_detail', chat_id=chat.id)
 

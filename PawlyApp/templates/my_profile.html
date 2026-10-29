@@ -90,8 +90,18 @@
           <div class="mini-row card card--pad">
             <img class="mini-row__photo" src="{{ application.pet.photo_url }}" alt="">
             <div class="grow">
+              {% if application.pet.for_adoption %}
               <a class="mini-row__link text-strong" href="{% url 'pet_detail' application.pet.id %}">{{ application.pet.name }}</a>
+              {% elif application.pet.owner == user %}
+              <a class="mini-row__link text-strong" href="{% url 'pet_profile' application.pet.id %}">{{ application.pet.name }}</a>
+              {% else %}
+              <span class="text-strong">{{ application.pet.name }}</span>
+              {% endif %}
+              {% if application.pet.owner == user %}
+              <p class="text-xs text-muted">{{ application.pet.get_species_display }} · {{ application.pet.age }}</p>
+              {% else %}
               <p class="text-xs text-muted">{% blocktrans with species=application.pet.get_species_display age=application.pet.age owner=application.pet.owner.display_name %}{{ species }} · {{ age }} · de {{ owner }}{% endblocktrans %}</p>
+              {% endif %}
             </div>
             <span class="tag {% if application.status == 'pending' %}tag--amber{% elif application.status == 'accepted' %}tag--green{% else %}tag--red{% endif %}">{{ application.get_status_display }}</span>
           </div>

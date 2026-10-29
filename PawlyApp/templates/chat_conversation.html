@@ -12,7 +12,23 @@
   </div>
   {% if application %}
   <div class="row">
+    {% if application.status == 'pending' %}
     <a class="btn btn--secondary btn--sm" href="{% url 'pet_detail' application.pet.id %}">{% blocktrans with name=application.pet.name %}Ver a {{ name }}{% endblocktrans %}</a>
+    {% elif application.pet.owner == user %}
+    <a class="btn btn--secondary btn--sm" href="{% url 'pet_profile' application.pet.id %}">{% blocktrans with name=application.pet.name %}Ver a {{ name }}{% endblocktrans %}</a>
+    {% endif %}
+    {% if application.applicant != user and application.status == 'pending' %}
+    <form class="inline-form" method="post" action="{% url 'application_accept' chat.id %}">
+      {% csrf_token %}
+      <button class="btn btn--dark btn--sm" type="submit"
+        data-confirm="{% blocktrans with pet=application.pet.name name=other.display_name %}¿Entregar a {{ pet }} a {{ name }}? Pasará a su perfil.{% endblocktrans %}">{% trans "Aceptar adopción" %}</button>
+    </form>
+    <form class="inline-form" method="post" action="{% url 'application_reject' chat.id %}">
+      {% csrf_token %}
+      <button class="btn btn--secondary btn--sm" type="submit"
+        data-confirm="{% blocktrans with name=other.display_name %}¿Rechazar la postulación de {{ name }}?{% endblocktrans %}">{% trans "Rechazar" %}</button>
+    </form>
+    {% endif %}
     {% if application.applicant == user and application.status == 'pending' %}
     <form class="inline-form" method="post" action="{% url 'application_cancel' chat.id %}">
       {% csrf_token %}
@@ -42,6 +58,10 @@
   {% else %}
   <li class="sysmsg">{% blocktrans with pet=application.pet.name %}La postulación para adoptar a {{ pet }} fue cancelada.{% endblocktrans %}</li>
   {% endif %}
+  {% elif application.status == 'accepted' %}
+  <li class="sysmsg">{% blocktrans with pet=application.pet.name name=application.applicant.display_name %}Adopción concretada: {{ pet }} ahora es parte de la familia de {{ name }}.{% endblocktrans %}</li>
+  {% elif application.status == 'rejected' %}
+  <li class="sysmsg">{% blocktrans with pet=application.pet.name %}La postulación para adoptar a {{ pet }} fue rechazada.{% endblocktrans %}</li>
   {% endif %}
 </ol>
 
